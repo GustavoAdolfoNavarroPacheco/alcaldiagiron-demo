@@ -12,9 +12,9 @@ export default function AdminLayout() {
     <div className="flex min-h-screen bg-paper-dim">
       <aside className="flex w-64 shrink-0 flex-col bg-gradient-ink text-paper">
         <Link to="/" className="group flex items-center gap-3 border-b border-paper/10 px-6 py-5">
-          <Escudo className="h-8 w-8 transition-transform duration-300 group-hover:scale-105" />
+          <Escudo className="h-10 transition-transform duration-300 group-hover:scale-105" />
           <div className="leading-tight">
-            <p className="font-display text-sm font-semibold">Gidi</p>
+            <p className="font-display text-sm font-semibold">Alcaldía de Girón</p>
             <p className="text-[10px] uppercase tracking-[0.18em] text-paper/45">Panel funcionario</p>
           </div>
         </Link>

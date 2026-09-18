@@ -1,7 +1,7 @@
-# Gidi — Alcaldía de Girón (demo)
+# Alcaldía de Girón (demo)
 
-Demo funcional del frontend de **Gidi**, plataforma unificada de gestión
-municipal para la Alcaldía de Girón. SPA construida con React 18 + TypeScript
+Demo funcional del frontend de la plataforma unificada de gestión
+municipal de la **Alcaldía de Girón**. SPA construida con React 18 + TypeScript
 + Vite + Tailwind CSS + React Router, con una "base de datos" simulada en
 `localStorage` (CRUD funcional, sin backend).
 

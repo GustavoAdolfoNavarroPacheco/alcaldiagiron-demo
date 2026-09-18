@@ -16,10 +16,10 @@ export default function Portada() {
 
       <div className="relative mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-10 sm:px-10">
         <header className="flex animate-fade-up items-center gap-3">
-          <Escudo className="h-10 w-10 drop-shadow-[0_2px_8px_rgba(201,138,30,0.35)]" />
+          <Escudo className="h-12 drop-shadow-[0_2px_8px_rgba(201,138,30,0.35)]" />
           <div>
             <p className="eyebrow text-paper/60">Municipio de Girón · Santander</p>
-            <p className="font-display text-lg font-semibold">Gidi</p>
+            <p className="font-display text-lg font-semibold">Alcaldía de Girón</p>
           </div>
         </header>
 
@@ -33,7 +33,7 @@ export default function Portada() {
             de sistemas distintos.
           </h1>
           <p className="delay-3 mt-6 max-w-xl animate-fade-up text-balance font-sans text-lg leading-relaxed text-paper/70">
-            Gidi reemplaza el trámite fragmentado por un expediente único: la misma
+            La Alcaldía de Girón reemplaza el trámite fragmentado por un expediente único: la misma
             información de cartera y PQRS, vista desde la ventanilla del ciudadano y
             desde el escritorio del funcionario.
           </p>

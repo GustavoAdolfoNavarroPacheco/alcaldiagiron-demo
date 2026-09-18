@@ -13,10 +13,10 @@ export default function CiudadanoLayout() {
       <header className="sticky top-0 z-20 border-b border-ink/8 bg-paper-card/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 sm:px-8">
           <Link to="/" className="group flex items-center gap-3">
-            <Escudo className="h-9 w-9 transition-transform duration-300 group-hover:scale-105" />
+            <Escudo className="h-11 transition-transform duration-300 group-hover:scale-105" />
             <div className="leading-tight">
-              <p className="font-display text-base font-semibold text-ink">Gidi</p>
-              <p className="eyebrow">Alcaldía de Girón</p>
+              <p className="font-display text-base font-semibold text-ink">Alcaldía de Girón</p>
+              <p className="eyebrow">Ventanilla Única</p>
             </div>
           </Link>
           <Link
