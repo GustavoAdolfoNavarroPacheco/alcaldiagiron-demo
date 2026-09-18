@@ -4,6 +4,34 @@ export default {
   theme: {
     extend: {
       colors: {
+        // --- Paleta Oficial Alcaldía de Girón ---
+        vinotinto: {
+          DEFAULT: '#6F1413', // Rojo colonial / Primario institucional Girón
+          deep: '#4D0E0D',
+          dark: '#5A1010',
+          light: '#8C2220',
+          soft: '#FAF0F0',
+        },
+        dorado: {
+          DEFAULT: '#FBBB05', // Amarillo oro de acento institucional
+          deep: '#D6A20E',
+          light: '#FCD34D',
+        },
+        govco: {
+          DEFAULT: '#3366CC', // Azul institucional Gov.co
+          dark: '#244CA3',
+        },
+        a11y: {
+          DEFAULT: '#00673D', // Verde botón de accesibilidad
+        },
+        tramiapp: {
+          DEFAULT: '#092AA1', // Azul Trámi App
+        },
+        superficie: {
+          card: '#DCDCDB',     // Fondo tarjetas secretarías
+          pizarra: '#1F2937',  // Círculo oscuro para íconos
+        },
+        // --- Tokens existentes ---
         ink: {
           DEFAULT: '#1C1B17',
           soft: '#2A2822',
@@ -43,12 +71,16 @@ export default {
         stamp: '0 2px 0 rgba(28,27,23,0.15)',
         glow: '0 8px 30px -6px rgba(201,138,30,0.45)',
         'glow-verde': '0 8px 30px -6px rgba(47,107,79,0.4)',
+        'glow-vinotinto': '0 8px 30px -6px rgba(111,20,19,0.45)',
+        'glow-dorado': '0 8px 30px -6px rgba(251,187,5,0.45)',
       },
       backgroundImage: {
         grain: "radial-gradient(circle at 1px 1px, rgba(28,27,23,0.05) 1px, transparent 0)",
         'gradient-ocre': 'linear-gradient(135deg, #DCA13F 0%, #C98A1E 45%, #8C5A0F 100%)',
         'gradient-ink': 'radial-gradient(120% 140% at 15% 0%, #2A2822 0%, #1C1B17 55%, #100F0C 100%)',
         'gradient-paper': 'radial-gradient(160% 120% at 100% 0%, #F7F1E1 0%, #FAF7EF 45%, #F1ECDD 100%)',
+        'gradient-vinotinto': 'linear-gradient(135deg, #8C2220 0%, #6F1413 50%, #4D0E0D 100%)',
+        'gradient-dorado': 'linear-gradient(135deg, #FCD34D 0%, #FBBB05 50%, #D6A20E 100%)',
       },
       keyframes: {
         fadeUp: {

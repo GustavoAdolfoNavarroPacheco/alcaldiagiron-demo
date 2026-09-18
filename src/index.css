@@ -29,12 +29,16 @@
   .rail-amarillo { border-left-color: #D4A017; }
   .rail-verde { border-left-color: #3F8F5F; }
   .rail-azul { border-left-color: #3B6FA0; }
+  .rail-vinotinto { border-left-color: #6F1413; }
+  .rail-dorado { border-left-color: #FBBB05; }
 
   .dot-rojo { background-color: #C0392B; }
   .dot-naranja { background-color: #D9762B; }
   .dot-amarillo { background-color: #D4A017; }
   .dot-verde { background-color: #3F8F5F; }
   .dot-azul { background-color: #3B6FA0; }
+  .dot-vinotinto { background-color: #6F1413; }
+  .dot-dorado { background-color: #FBBB05; }
 
   .card-lift {
     @apply transition-all duration-300 ease-out will-change-transform;
@@ -42,6 +46,12 @@
   .card-lift:hover {
     transform: translateY(-0.25rem);
     box-shadow: 0 4px 10px rgba(28,27,23,0.08), 0 20px 40px -8px rgba(28,27,23,0.18);
+  }
+
+  .card-secretaria {
+    @apply relative flex flex-col items-center justify-between rounded-xl bg-superficie-card p-6
+      border-b-4 border-dorado transition-all duration-300 ease-out hover:-translate-y-1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   .btn-primary {
@@ -56,6 +66,32 @@
     box-shadow: 0 12px 34px -6px rgba(201,138,30,0.55);
   }
   .btn-primary:active {
+    @apply translate-y-0 scale-[0.98];
+  }
+
+  .btn-vinotinto {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full
+      px-6 py-3 font-mono text-xs font-semibold uppercase tracking-wide text-white
+      transition-all duration-300 ease-out bg-gradient-vinotinto shadow-glow-vinotinto;
+  }
+  .btn-vinotinto:hover {
+    @apply -translate-y-0.5 brightness-110;
+    box-shadow: 0 12px 34px -6px rgba(111,20,19,0.55);
+  }
+  .btn-vinotinto:active {
+    @apply translate-y-0 scale-[0.98];
+  }
+
+  .btn-dorado {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full
+      px-6 py-3 font-mono text-xs font-semibold uppercase tracking-wide text-ink
+      transition-all duration-300 ease-out bg-gradient-dorado shadow-glow-dorado;
+  }
+  .btn-dorado:hover {
+    @apply -translate-y-0.5 brightness-105;
+    box-shadow: 0 12px 34px -6px rgba(251,187,5,0.55);
+  }
+  .btn-dorado:active {
     @apply translate-y-0 scale-[0.98];
   }
 
