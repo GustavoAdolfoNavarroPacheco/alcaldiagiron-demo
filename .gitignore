@@ -2,6 +2,8 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.firecrawl/
 
 .vscode/*
 !.vscode/extensions.json
