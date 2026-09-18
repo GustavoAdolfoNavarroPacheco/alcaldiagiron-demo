@@ -1,0 +1,190 @@
+{
+  "deudores": [
+    {
+      "id": "d-001",
+      "documento": "91.245.883",
+      "nombre": "Carlos Alberto Rueda Serrano",
+      "vigenciaAdeudada": "2021 - 2025",
+      "concepto": "Impuesto Predial Unificado",
+      "valorCapital": 18400000,
+      "valorIntereses": 5120000,
+      "estadoProceso": "Mandamiento de pago notificado",
+      "predios": [
+        { "matricula": "300-45821", "direccion": "Cra 25 #12-34, B. Poblado", "avaluoCatastral": 142000000 }
+      ],
+      "historialOficios": [
+        { "fecha": "2025-03-11", "tipo": "Requerimiento", "descripcion": "Primer requerimiento de pago por vía administrativa." },
+        { "fecha": "2025-08-22", "tipo": "Mandamiento de pago", "descripcion": "Notificación de mandamiento de pago, Resolución 0442 de 2025." }
+      ]
+    },
+    {
+      "id": "d-002",
+      "documento": "63.478.912",
+      "nombre": "Constructora Girón Vive S.A.S.",
+      "vigenciaAdeudada": "2023 - 2025",
+      "concepto": "Impuesto de Industria y Comercio (ICA)",
+      "valorCapital": 25100000,
+      "valorIntereses": 3900000,
+      "estadoProceso": "Embargo de cuentas en trámite",
+      "predios": [
+        { "matricula": "300-77102", "direccion": "Zona Industrial Café Madrid, Bodega 4", "avaluoCatastral": 310000000 }
+      ],
+      "historialOficios": [
+        { "fecha": "2024-11-05", "tipo": "Requerimiento", "descripcion": "Requerimiento de pago por ICA vigencia 2023." },
+        { "fecha": "2025-05-14", "tipo": "Mandamiento de pago", "descripcion": "Mandamiento de pago Resolución 0198 de 2025." },
+        { "fecha": "2025-09-02", "tipo": "Oficio de embargo", "descripcion": "Oficio a entidad financiera para embargo de cuentas bancarias." }
+      ]
+    },
+    {
+      "id": "d-003",
+      "documento": "1.098.765.432",
+      "nombre": "María Fernanda Ortiz Cala",
+      "vigenciaAdeudada": "2024",
+      "concepto": "Impuesto Predial Unificado",
+      "valorCapital": 9200000,
+      "valorIntereses": 2050000,
+      "estadoProceso": "Mandamiento de pago notificado",
+      "predios": [
+        { "matricula": "300-51290", "direccion": "Cl 30 #8-19, B. Chimitá", "avaluoCatastral": 96000000 }
+      ],
+      "historialOficios": [
+        { "fecha": "2025-04-18", "tipo": "Requerimiento", "descripcion": "Requerimiento de pago por predial vigencia 2024." },
+        { "fecha": "2025-07-30", "tipo": "Mandamiento de pago", "descripcion": "Mandamiento de pago Resolución 0301 de 2025." }
+      ]
+    },
+    {
+      "id": "d-004",
+      "documento": "13.567.221",
+      "nombre": "José Elías Amaya Duarte",
+      "vigenciaAdeudada": "2022 - 2024",
+      "concepto": "Sobretasa Ambiental",
+      "valorCapital": 8100000,
+      "valorIntereses": 2980000,
+      "estadoProceso": "En cobro persuasivo",
+      "predios": [
+        { "matricula": "300-63018", "direccion": "Vereda Ruitoque, Finca La Esperanza", "avaluoCatastral": 210000000 }
+      ],
+      "historialOficios": [
+        { "fecha": "2025-06-09", "tipo": "Invitación a pago", "descripcion": "Invitación a acuerdo de pago por sobretasa ambiental." }
+      ]
+    },
+    {
+      "id": "d-005",
+      "documento": "37.884.201",
+      "nombre": "Diana Patricia Villamizar Roa",
+      "vigenciaAdeudada": "2024",
+      "concepto": "Impuesto Predial Unificado",
+      "valorCapital": 2600000,
+      "valorIntereses": 610000,
+      "estadoProceso": "En cobro persuasivo",
+      "predios": [
+        { "matricula": "300-49933", "direccion": "Cl 45 #14-02, B. San Juan", "avaluoCatastral": 68000000 }
+      ],
+      "historialOficios": [
+        { "fecha": "2025-08-01", "tipo": "Invitación a pago", "descripcion": "Invitación a normalizar cartera vigencia 2024." }
+      ]
+    },
+    {
+      "id": "d-006",
+      "documento": "91.322.147",
+      "nombre": "Luis Eduardo Prada Niño",
+      "vigenciaAdeudada": "2024",
+      "concepto": "Impuesto Predial Unificado",
+      "valorCapital": 950000,
+      "valorIntereses": 180000,
+      "estadoProceso": "Al día - saldo menor",
+      "predios": [
+        { "matricula": "300-58471", "direccion": "Cra 10 #6-45, B. Acapulco", "avaluoCatastral": 54000000 }
+      ],
+      "historialOficios": [
+        { "fecha": "2025-08-20", "tipo": "Invitación a pago", "descripcion": "Recordatorio de saldo pendiente vigencia 2024." }
+      ]
+    }
+  ],
+  "pqrs": [
+    {
+      "id": "p-001",
+      "radicado": "PQRS-2026-000118",
+      "tipo": "Petición",
+      "asunto": "Solicitud de copia de estado de cuenta predial",
+      "solicitante": "Ana Milena Suárez Gómez",
+      "documentoSolicitante": "63.245.109",
+      "fechaRadicacion": "2026-08-20",
+      "fechaLimite": "2026-09-19",
+      "fechaRespuesta": null,
+      "estado": "En proceso",
+      "archivoAdjunto": "cedula_ana_suarez.pdf",
+      "dependencia": "Secretaría de Hacienda"
+    },
+    {
+      "id": "p-002",
+      "radicado": "PQRS-2026-000094",
+      "tipo": "Reclamo",
+      "asunto": "Inconformidad por cobro de intereses moratorios",
+      "solicitante": "Jorge Iván Cárdenas Mora",
+      "documentoSolicitante": "13.789.456",
+      "fechaRadicacion": "2026-08-01",
+      "fechaLimite": "2026-08-31",
+      "fechaRespuesta": null,
+      "estado": "Vencida",
+      "archivoAdjunto": "recibo_predial_2025.pdf",
+      "dependencia": "Cobro Coactivo"
+    },
+    {
+      "id": "p-003",
+      "radicado": "PQRS-2026-000067",
+      "tipo": "Queja",
+      "asunto": "Demora en atención de ventanilla de trámites",
+      "solicitante": "Sandra Milena Rojas Peña",
+      "documentoSolicitante": "37.556.812",
+      "fechaRadicacion": "2026-07-10",
+      "fechaLimite": "2026-08-09",
+      "fechaRespuesta": "2026-08-06",
+      "estado": "Resuelta",
+      "archivoAdjunto": null,
+      "dependencia": "Atención al Ciudadano"
+    },
+    {
+      "id": "p-004",
+      "radicado": "PQRS-2026-000051",
+      "tipo": "Petición",
+      "asunto": "Solicitud de paz y salvo municipal",
+      "solicitante": "Carlos Humberto Gélvez Ardila",
+      "documentoSolicitante": "91.478.203",
+      "fechaRadicacion": "2026-06-15",
+      "fechaLimite": "2026-07-15",
+      "fechaRespuesta": "2026-07-28",
+      "estado": "Resuelta",
+      "archivoAdjunto": "solicitud_paz_y_salvo.pdf",
+      "dependencia": "Secretaría de Hacienda"
+    },
+    {
+      "id": "p-005",
+      "radicado": "PQRS-2026-000131",
+      "tipo": "Denuncia",
+      "asunto": "Presunta doble facturación de impuesto predial",
+      "solicitante": "Luz Marina Contreras Silva",
+      "documentoSolicitante": "1.101.345.678",
+      "fechaRadicacion": "2026-09-05",
+      "fechaLimite": "2026-10-05",
+      "fechaRespuesta": null,
+      "estado": "En proceso",
+      "archivoAdjunto": "factura_doble_predial.pdf",
+      "dependencia": "Secretaría de Hacienda"
+    },
+    {
+      "id": "p-006",
+      "radicado": "PQRS-2026-000079",
+      "tipo": "Sugerencia",
+      "asunto": "Habilitar pago en línea con PSE para ICA",
+      "solicitante": "Fabián Andrés Niño Torres",
+      "documentoSolicitante": "80.334.552",
+      "fechaRadicacion": "2026-07-22",
+      "fechaLimite": "2026-08-21",
+      "fechaRespuesta": "2026-08-19",
+      "estado": "Resuelta",
+      "archivoAdjunto": null,
+      "dependencia": "Secretaría TIC"
+    }
+  ]
+}

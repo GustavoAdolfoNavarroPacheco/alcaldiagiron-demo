@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: #FAF7EF;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-ocre/30;
+  }
+  :focus-visible {
+    outline: 2px solid #C98A1E;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.18em] text-ink-faint;
+  }
+
+  .rail-rojo { border-left-color: #C0392B; }
+  .rail-naranja { border-left-color: #D9762B; }
+  .rail-amarillo { border-left-color: #D4A017; }
+  .rail-verde { border-left-color: #3F8F5F; }
+  .rail-azul { border-left-color: #3B6FA0; }
+
+  .dot-rojo { background-color: #C0392B; }
+  .dot-naranja { background-color: #D9762B; }
+  .dot-amarillo { background-color: #D4A017; }
+  .dot-verde { background-color: #3F8F5F; }
+  .dot-azul { background-color: #3B6FA0; }
+
+  .card-lift {
+    @apply transition-all duration-300 ease-out will-change-transform;
+  }
+  .card-lift:hover {
+    transform: translateY(-0.25rem);
+    box-shadow: 0 4px 10px rgba(28,27,23,0.08), 0 20px 40px -8px rgba(28,27,23,0.18);
+  }
+
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full
+      px-6 py-3 font-mono text-xs font-semibold uppercase tracking-wide text-paper
+      transition-all duration-300 ease-out;
+    background-image: linear-gradient(135deg, #DCA13F 0%, #C98A1E 45%, #8C5A0F 100%);
+    box-shadow: 0 8px 30px -6px rgba(201,138,30,0.45);
+  }
+  .btn-primary:hover {
+    @apply -translate-y-0.5 brightness-110;
+    box-shadow: 0 12px 34px -6px rgba(201,138,30,0.55);
+  }
+  .btn-primary:active {
+    @apply translate-y-0 scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/15 px-5 py-2.5
+      font-mono text-xs uppercase tracking-wide text-ink-faint transition-all duration-200 ease-out
+      hover:-translate-y-0.5 hover:border-ink/30 hover:text-ink;
+  }
+  .btn-ghost:hover {
+    box-shadow: 0 1px 2px rgba(28,27,23,0.05), 0 8px 24px -4px rgba(28,27,23,0.10);
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-ink/15 bg-paper-card px-3.5 py-2.5 text-sm text-ink shadow-sm
+      transition-all duration-200 ease-out placeholder:text-ink-faint/50
+      focus:border-ocre focus:outline-none;
+  }
+  .field:focus {
+    box-shadow: 0 8px 30px -6px rgba(201,138,30,0.45);
+  }
+}
+
+@layer utilities {
+  .delay-1 { animation-delay: 90ms; }
+  .delay-2 { animation-delay: 180ms; }
+  .delay-3 { animation-delay: 270ms; }
+  .delay-4 { animation-delay: 360ms; }
+  .delay-5 { animation-delay: 450ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
