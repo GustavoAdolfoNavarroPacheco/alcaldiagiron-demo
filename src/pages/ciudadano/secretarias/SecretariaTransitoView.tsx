@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 interface ComparendoMock {
   numero: string
@@ -40,6 +41,26 @@ export default function SecretariaTransitoView() {
   const [valorBusqueda, setValorBusqueda] = useState('GIR-842')
   const [resultado, setResultado] = useState<ComparendoMock[] | null>(COMPARENDOS_MOCK)
   const [pazYSalvoGenerado, setPazYSalvoGenerado] = useState(false)
+  const [radicadoPYS, setRadicadoPYS] = useState<string | null>(null)
+
+  function handleGenerarPazYSalvo() {
+    const codigo = nextTramiteRadicado('PYS-TRA')
+    const hoy = new Date().toISOString().slice(0, 10)
+    addTramiteSecretaria('transito-transporte', {
+      id: `tra-${Date.now()}`,
+      radicado: codigo,
+      titulo: `Paz y Salvo de Infracciones: ${valorBusqueda.toUpperCase()}`,
+      solicitante: `Propietario / Conductor (${valorBusqueda.toUpperCase()})`,
+      documentoSolicitante: criterio === 'cedula' ? valorBusqueda : 'Consulta Placa',
+      fecha: hoy,
+      estado: 'Aprobado',
+      prioridad: 'Baja',
+      tipoTramite: 'Certificación Paz y Salvo',
+      descripcion: `Certificado digital de no comparendos pendientes expedido para ${valorBusqueda.toUpperCase()}.`,
+    })
+    setRadicadoPYS(codigo)
+    setPazYSalvoGenerado(true)
+  }
 
   function handleBuscar(e: React.FormEvent) {
     e.preventDefault()
@@ -202,7 +223,7 @@ export default function SecretariaTransitoView() {
             </p>
             <button
               type="button"
-              onClick={() => setPazYSalvoGenerado(true)}
+              onClick={handleGenerarPazYSalvo}
               className="btn-vinotinto text-xs"
             >
               Generar Certificado de Paz y Salvo con QR
@@ -227,7 +248,9 @@ export default function SecretariaTransitoView() {
                 <rect x="13" y="13" width="7" height="7" />
               </svg>
             </div>
-            <p className="text-[11px] text-ink-faint font-mono">Código de Validación: PYS-GIR-{Date.now().toString().slice(-6)}</p>
+            <p className="text-[11px] text-ink-faint font-mono">
+              Código de Radicado y Validación: {radicadoPYS ?? `PYS-GIR-${Date.now().toString().slice(-6)}`}
+            </p>
             <button
               type="button"
               onClick={() => window.print()}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const ACTAS_COMITES = [
   {
@@ -27,6 +28,26 @@ const ACTAS_COMITES = [
 export default function SecretariaGobiernoView() {
   const [jacBarrio, setJacBarrio] = useState('JAC Barrio El Poblado')
   const [certificadoGenerado, setCertificadoGenerado] = useState(false)
+  const [radicadoJAC, setRadicadoJAC] = useState<string | null>(null)
+
+  function handleGenerarCertificadoJAC() {
+    const codigo = nextTramiteRadicado('JAC-GIR')
+    const hoy = new Date().toISOString().slice(0, 10)
+    addTramiteSecretaria('gobierno', {
+      id: `gob-${Date.now()}`,
+      radicado: codigo,
+      titulo: `Certificado Representación Legal: ${jacBarrio}`,
+      solicitante: `Dignatarios ${jacBarrio}`,
+      documentoSolicitante: 'Reconocimiento Comunal',
+      fecha: hoy,
+      estado: 'Aprobado',
+      prioridad: 'Baja',
+      tipoTramite: 'Certificación JAC Comunal',
+      descripcion: `Certificado digital de existencia y representación legal de la junta comunal ${jacBarrio}.`,
+    })
+    setRadicadoJAC(codigo)
+    setCertificadoGenerado(true)
+  }
 
   return (
     <div className="space-y-8 animate-fade-up">
@@ -123,16 +144,16 @@ export default function SecretariaGobiernoView() {
 
             <button
               type="button"
-              onClick={() => setCertificadoGenerado(true)}
+              onClick={handleGenerarCertificadoJAC}
               className="btn-vinotinto text-xs w-full"
             >
               Generar Certificado JAC con QR
             </button>
 
-            {certificadoGenerado && (
+            {certificadoGenerado && radicadoJAC && (
               <div className="p-3 bg-girverde/10 border border-girverde/20 rounded-xl space-y-1 animate-fade-in text-center">
-                <span className="font-mono font-bold text-girverde-deep block">Certificado Expedido</span>
-                <span className="font-mono text-[10px] text-ink-faint">JAC-GIR-{Date.now().toString().slice(-6)}</span>
+                <span className="font-mono font-bold text-girverde-deep block">Certificado Expedido y Registrado</span>
+                <span className="font-mono text-[10px] text-ink-faint">{radicadoJAC}</span>
               </div>
             )}
           </div>

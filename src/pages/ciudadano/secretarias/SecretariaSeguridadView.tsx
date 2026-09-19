@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CustomSelect from '../../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const TIPOS_QUERELLA = [
   'Perturbación a la tranquilidad (Ruido excesivo o actividades molestas)',
@@ -24,7 +25,21 @@ export default function SecretariaSeguridadView() {
 
   function handleRadicarQuerella(e: React.FormEvent) {
     e.preventDefault()
-    setQuerellaRadicada(`QRL-POL-${Date.now().toString().slice(-6)}`)
+    const codigo = nextTramiteRadicado('QRL-POL')
+    const hoy = new Date().toISOString().slice(0, 10)
+    addTramiteSecretaria('seguridad-gestion-riesgo', {
+      id: `seg-${Date.now()}`,
+      radicado: codigo,
+      titulo: `Querella Policiva: ${tipoQuerella}`,
+      solicitante: querellante.trim() || 'Ciudadano Querellante',
+      documentoSolicitante: 'Cédula en expediente',
+      fecha: hoy,
+      estado: 'En Trámite',
+      prioridad: 'Alta',
+      tipoTramite: 'Querella Policiva / Convivencia',
+      descripcion: `Contra: ${querellado || 'Sujeto Indeterminado'}. Hechos: ${hechos}. Asignada a: ${inspeccion}.`,
+    })
+    setQuerellaRadicada(codigo)
   }
 
   return (

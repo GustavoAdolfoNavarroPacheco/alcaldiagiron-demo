@@ -2,45 +2,41 @@ import { Link } from 'react-router-dom'
 
 export default function CiudadanoInicio() {
   return (
-    <div className="space-y-10">
-      {/* Hero institucional con mensaje de bienvenida y contexto */}
-      <section className="relative overflow-hidden rounded-3xl border border-ink/8 bg-paper-card p-6 sm:p-10 shadow-card">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-vinotinto/5 blur-3xl" />
-        <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-dorado/10 blur-3xl" />
-
-        <div className="relative max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-vinotinto/15 bg-vinotinto-soft px-3.5 py-1 text-xs font-semibold text-vinotinto">
-            <span className="h-1.5 w-1.5 rounded-full bg-vinotinto animate-pulse" />
+    <div className="space-y-8">
+      {/* Hero Institucional Corporativo */}
+      <section className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             Ventanilla Única Digital · Alcaldía de Girón
           </div>
 
-          <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl leading-tight">
+          <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
             Portal de Trámites y <span className="text-vinotinto">Atención Ciudadana</span>
           </h1>
 
-          <p className="mt-4 text-base leading-relaxed text-ink-faint sm:text-lg">
-            Realice sus solicitudes, peticiones y quejas ante la administración municipal de San Juan Girón.
-            Garantizamos trazabilidad en tiempo real, sello de radicación oficial y respuesta dentro de los términos legales.
+          <p className="mt-2.5 text-sm leading-relaxed text-slate-600 sm:text-base">
+            Realice sus solicitudes, peticiones y quejas ante la administración municipal de San Juan de Girón con plena validez jurídica.
+            Garantizamos trazabilidad en tiempo real, radicación oficial inmediata y respuesta estricta según los términos de ley.
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center gap-6 pt-2 border-t border-ink/5 text-xs text-ink-faint">
-            <div className="flex items-center gap-2">
-              <svg className="h-4 w-4 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-slate-100 pt-4 text-xs text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <svg className="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
-              <span>Trámites 100% seguros y oficiales</span>
+              <span>Trámites oficiales y seguros</span>
             </div>
-            <div className="flex items-center gap-2">
-              <svg className="h-4 w-4 text-ocre-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="flex items-center gap-1.5">
+              <svg className="h-4 w-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
               <span>Monitoreo de términos Ley 1755 de 2015</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <svg className="h-4 w-4 text-vinotinto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>Sin intermediarios ni costos</span>
             </div>
@@ -48,238 +44,192 @@ export default function CiudadanoInicio() {
         </div>
       </section>
 
-      {/* Tarjetas de acción principales con distribución balanceada */}
+      {/* Tarjetas de Acción Directa */}
       <section>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <p className="eyebrow text-vinotinto">Acciones Rápidas</p>
-            <h2 className="font-display text-2xl font-semibold text-ink">¿Qué trámite desea gestionar?</h2>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Acciones Principales</p>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900">¿Qué trámite desea gestionar hoy?</h2>
           </div>
-          <span className="hidden sm:block font-mono text-xs text-ink-faint/70">Seleccione una opción para iniciar</span>
+          <span className="hidden sm:block text-xs text-slate-400">Seleccione una opción para comenzar</span>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {/* Tarjeta 1: Radicar PQRS */}
           <Link
             to="/ciudadano/radicar"
-            className="card-lift group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-ink/8 bg-paper-card p-6 sm:p-8 shadow-card hover:border-vinotinto/30"
+            className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm"
           >
-            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-vinotinto/5 transition-transform duration-500 group-hover:scale-150" />
-
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-vinotinto-soft text-vinotinto transition-colors duration-300 group-hover:bg-vinotinto group-hover:text-white">
-                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="12" y1="12" x2="12" y2="18" />
-                    <line x1="9" y1="15" x2="15" y2="15" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-vinotinto/10 text-vinotinto group-hover:bg-vinotinto group-hover:text-white transition-colors">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-vinotinto bg-vinotinto/10 px-2.5 py-1 rounded-md">
+                <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
                   Paso 01
                 </span>
               </div>
 
-              <h3 className="mt-5 font-display text-2xl font-semibold text-ink">
+              <h3 className="mt-4 text-lg font-bold text-slate-900 group-hover:text-vinotinto transition-colors">
                 Radicar una PQRS
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-faint">
-                Presente peticiones, quejas, reclamos, sugerencias o denuncias dirigidas a cualquier secretaría de la Alcaldía.
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                Presente peticiones, quejas, reclamos, sugerencias o denuncias dirigidas a cualquiera de las dependencias de la Alcaldía.
               </p>
 
-              <ul className="mt-5 space-y-2 border-t border-ink/5 pt-4 text-xs text-ink-soft">
+              <ul className="mt-4 space-y-2 border-t border-slate-100 pt-3 text-xs text-slate-600">
                 <li className="flex items-center gap-2">
-                  <svg className="h-3.5 w-3.5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
                   <span>Generación inmediata de número de radicado oficial</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <svg className="h-3.5 w-3.5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Asignación directa a la secretaría o dependencia responsable</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span>Asignación directa a la secretaría correspondiente</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <svg className="h-3.5 w-3.5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Soporte para adjuntar soportes y documentos probatorios</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span>Soporte para adjuntar evidencias y documentos</span>
                 </li>
               </ul>
             </div>
 
-            <div className="mt-8 flex items-center justify-between border-t border-ink/5 pt-4">
-              <span className="font-mono text-xs uppercase tracking-wide text-vinotinto font-semibold group-hover:underline">
-                Iniciar radicación
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-vinotinto-soft text-vinotinto transition-all duration-300 group-hover:translate-x-1 group-hover:bg-vinotinto group-hover:text-white">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
+            <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-semibold text-vinotinto">
+              <span>Iniciar radicación</span>
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </Link>
 
           {/* Tarjeta 2: Consultar Estado */}
           <Link
             to="/ciudadano/consultar"
-            className="card-lift group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-ink/8 bg-paper-card p-6 sm:p-8 shadow-card hover:border-girverde/30"
+            className="group flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm"
           >
-            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-girverde/5 transition-transform duration-500 group-hover:scale-150" />
-
             <div>
               <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-girverde/10 text-girverde-deep transition-colors duration-300 group-hover:bg-girverde group-hover:text-white">
-                  <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    <path d="m9 11 2 2 4-4" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-700 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-girverde-deep bg-girverde/10 px-2.5 py-1 rounded-md">
+                <span className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
                   Paso 02
                 </span>
               </div>
 
-              <h3 className="mt-5 font-display text-2xl font-semibold text-ink">
+              <h3 className="mt-4 text-lg font-bold text-slate-900 group-hover:text-slate-700 transition-colors">
                 Consultar Estado de Trámite
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-faint">
-                Verifique en qué etapa va su solicitud ingresando su código alfanumérico de radicado.
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                Verifique en qué etapa procesal se encuentra su solicitud ingresando su código único de radicado.
               </p>
 
-              <ul className="mt-5 space-y-2 border-t border-ink/5 pt-4 text-xs text-ink-soft">
+              <ul className="mt-4 space-y-2 border-t border-slate-100 pt-3 text-xs text-slate-600">
                 <li className="flex items-center gap-2">
-                  <svg className="h-3.5 w-3.5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Consulta inmediata sin necesidad de registro previo</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span>Consulta pública inmediata sin claves de acceso</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <svg className="h-3.5 w-3.5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Semáforo de términos de respuesta y días restantes</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span>Semáforo de términos de respuesta y días hábiles</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <svg className="h-3.5 w-3.5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span>Visualización de respuesta oficial y constancias</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                  <span>Descarga de oficios de respuesta formalmente firmados</span>
                 </li>
               </ul>
             </div>
 
-            <div className="mt-8 flex items-center justify-between border-t border-ink/5 pt-4">
-              <span className="font-mono text-xs uppercase tracking-wide text-girverde-deep font-semibold group-hover:underline">
-                Rastrear radicado
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-girverde/10 text-girverde-deep transition-all duration-300 group-hover:translate-x-1 group-hover:bg-girverde group-hover:text-white">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
+            <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-semibold text-slate-700">
+              <span>Consultar radicado</span>
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </Link>
         </div>
       </section>
 
-      {/* Panel informativo inferior: Guía ciudadana y canales oficiales */}
-      <section className="grid gap-6 lg:grid-cols-3">
-        {/* Términos legales de respuesta */}
-        <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card">
-          <div className="flex items-center gap-2.5 text-ink">
-            <svg className="h-5 w-5 text-vinotinto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
+      {/* Guía Informativa y Canales Oficiales */}
+      <section className="grid gap-5 lg:grid-cols-3">
+        {/* Términos Legales */}
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <svg className="h-4 w-4 text-vinotinto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <h4 className="font-display font-semibold text-base">Términos Legales</h4>
+            <h4 className="text-sm font-bold text-slate-900">Términos Legales</h4>
           </div>
-          <p className="mt-2 text-xs text-ink-faint leading-relaxed">
+          <p className="mt-2.5 text-xs text-slate-500 leading-relaxed">
             Plazos máximos estipulados por la ley colombiana para emitir respuesta:
           </p>
 
-          <div className="mt-4 space-y-2.5 text-xs">
-            <div className="flex items-center justify-between rounded-lg bg-paper p-2.5 border border-ink/5">
-              <span className="font-medium text-ink">Peticiones de interés</span>
-              <span className="font-mono font-semibold text-vinotinto">15 días hábiles</span>
+          <div className="mt-3.5 space-y-2 text-xs">
+            <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+              <span className="font-medium text-slate-700">Peticiones de interés</span>
+              <span className="font-semibold text-vinotinto tabular-nums">15 días hábiles</span>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-paper p-2.5 border border-ink/5">
-              <span className="font-medium text-ink">Quejas y Reclamos</span>
-              <span className="font-mono font-semibold text-vinotinto">15 días hábiles</span>
+            <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+              <span className="font-medium text-slate-700">Quejas y Reclamos</span>
+              <span className="font-semibold text-vinotinto tabular-nums">15 días hábiles</span>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-paper p-2.5 border border-ink/5">
-              <span className="font-medium text-ink">Sugerencias y propuestas</span>
-              <span className="font-mono font-semibold text-vinotinto">15 días hábiles</span>
+            <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+              <span className="font-medium text-slate-700">Sugerencias</span>
+              <span className="font-semibold text-vinotinto tabular-nums">15 días hábiles</span>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-paper p-2.5 border border-ink/5">
-              <span className="font-medium text-ink">Denuncias públicas</span>
-              <span className="font-mono font-semibold text-vinotinto">30 días hábiles</span>
+            <div className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
+              <span className="font-medium text-slate-700">Denuncias públicas</span>
+              <span className="font-semibold text-vinotinto tabular-nums">30 días hábiles</span>
             </div>
           </div>
         </div>
 
-        {/* Canales y Horarios de Atención */}
-        <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card">
-          <div className="flex items-center gap-2.5 text-ink">
-            <svg className="h-5 w-5 text-ocre-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
+        {/* Atención Presencial */}
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <svg className="h-4 w-4 text-dorado-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <h4 className="font-display font-semibold text-base">Atención Presencial</h4>
+            <h4 className="text-sm font-bold text-slate-900">Atención Presencial</h4>
           </div>
-          <p className="mt-2 text-xs text-ink-faint leading-relaxed">
+          <p className="mt-2.5 text-xs text-slate-500 leading-relaxed">
             Sede principal de la administración municipal:
           </p>
 
-          <div className="mt-4 space-y-3 text-xs text-ink-soft">
-            <div>
-              <p className="font-semibold text-ink">Palacio Municipal Girón</p>
-              <p className="text-ink-faint">Calle 30 No. 25-66, Centro Histórico</p>
+          <div className="mt-3.5 space-y-2.5 text-xs">
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-2.5">
+              <p className="font-semibold text-slate-800">Palacio Municipal San Juan de Girón</p>
+              <p className="text-slate-500 mt-0.5">Calle 30 No. 25-66, Centro Histórico</p>
             </div>
-            <div>
-              <p className="font-semibold text-ink">Horario de Atención</p>
-              <p className="text-ink-faint">Lunes a Viernes: 8:00 a.m. a 12:00 m.</p>
-              <p className="text-ink-faint">y 2:00 p.m. a 6:00 p.m.</p>
-            </div>
-            <div className="rounded-lg bg-dorado/10 p-2 text-[11px] text-ocre-deep font-medium border border-dorado/20">
-              Ventanilla Única habilitada permanentemente
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-2.5">
+              <p className="font-semibold text-slate-800">Horarios de Atención</p>
+              <p className="text-slate-500 mt-0.5">Lunes a Viernes: 8:00 a.m. - 12:00 m.</p>
+              <p className="text-slate-500">y 2:00 p.m. - 6:00 p.m.</p>
             </div>
           </div>
         </div>
 
-        {/* Contacto y Soporte */}
-        <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card">
-          <div className="flex items-center gap-2.5 text-ink">
-            <svg className="h-5 w-5 text-girverde-deep" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        {/* Canales Oficiales */}
+        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
+          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
             </svg>
-            <h4 className="font-display font-semibold text-base">Líneas Oficiales</h4>
+            <h4 className="text-sm font-bold text-slate-900">Canales Oficiales</h4>
           </div>
-          <p className="mt-2 text-xs text-ink-faint leading-relaxed">
+          <p className="mt-2.5 text-xs text-slate-500 leading-relaxed">
             Comuníquese directamente con atención al ciudadano:
           </p>
 
-          <div className="mt-4 space-y-3 text-xs text-ink-soft">
-            <div className="rounded-lg bg-paper p-2.5 border border-ink/5">
-              <span className="block text-[10px] uppercase tracking-wider text-ink-faint">Conmutador PBX</span>
-              <span className="font-mono text-sm font-semibold text-ink">+57 (607) 646 3030</span>
+          <div className="mt-3.5 space-y-2.5 text-xs">
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-2.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Conmutador PBX</span>
+              <p className="font-mono text-xs font-bold text-slate-800 mt-0.5">+57 (607) 646 3030</p>
             </div>
-            <div className="rounded-lg bg-paper p-2.5 border border-ink/5">
-              <span className="block text-[10px] uppercase tracking-wider text-ink-faint">Correo Institucional</span>
-              <span className="font-mono text-xs font-semibold text-ink truncate block">
-                contactenos@giron-santander.gov.co
-              </span>
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-2.5">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Correo Institucional</span>
+              <p className="font-mono text-[11px] font-bold text-slate-800 truncate mt-0.5">contactenos@giron-santander.gov.co</p>
             </div>
-            <p className="text-[11px] text-ink-faint">
-              Notificaciones judiciales y trámites administrativos.
-            </p>
           </div>
         </div>
       </section>

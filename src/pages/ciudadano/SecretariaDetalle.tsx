@@ -19,12 +19,15 @@ export default function SecretariaDetalle() {
 
   if (!secretaria) {
     return (
-      <div className="rounded-2xl border border-ink/8 bg-paper-card p-8 text-center shadow-card">
-        <h2 className="font-display text-xl font-semibold text-ink">Secretaría no encontrada</h2>
-        <p className="mt-2 text-sm text-ink-faint">
+      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center shadow-xs">
+        <h2 className="text-lg font-bold text-slate-900">Secretaría no encontrada</h2>
+        <p className="mt-1.5 text-xs text-slate-500">
           La dependencia solicitada no figura en la estructura actual del portal.
         </p>
-        <Link to="/ciudadano" className="btn-vinotinto mt-6 inline-block text-xs">
+        <Link
+          to="/ciudadano"
+          className="mt-4 inline-flex items-center rounded-lg bg-vinotinto px-4 py-2 text-xs font-semibold text-white hover:bg-vinotinto-deep transition-colors"
+        >
           Volver al Inicio
         </Link>
       </div>

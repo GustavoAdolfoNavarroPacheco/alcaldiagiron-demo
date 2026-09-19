@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CustomSelect from '../../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const TALLERES_ARTISTICOS = [
   'Música de Cuerda y Tiple Gironés',
@@ -41,6 +42,22 @@ export default function SecretariaCulturaView() {
 
   function handleInscribir(e: React.FormEvent) {
     e.preventDefault()
+    const codigo = nextTramiteRadicado('CUL-FORM')
+    const hoy = new Date().toISOString().slice(0, 10)
+
+    addTramiteSecretaria('cultura-turismo-deporte', {
+      id: `cul-${Date.now()}`,
+      radicado: codigo,
+      titulo: `Inscripción Cultural: ${taller}`,
+      solicitante: estudiante.trim() || 'Estudiante Gironés',
+      documentoSolicitante: `Edad: ${edad} años`,
+      fecha: hoy,
+      estado: 'Aprobado',
+      prioridad: 'Baja',
+      tipoTramite: 'Formación Cultural y Deportiva',
+      descripcion: `Inscripción al taller ${taller} en Casa de la Cultura de Girón.`,
+    })
+
     setInscripcionExitosa(true)
   }
 

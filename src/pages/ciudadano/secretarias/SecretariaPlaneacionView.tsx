@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 export default function SecretariaPlaneacionView() {
   const [predial, setPredial] = useState('01-02-0045-0012-000')
@@ -11,8 +12,24 @@ export default function SecretariaPlaneacionView() {
 
   function handleGenerarCertificado(e: React.FormEvent) {
     e.preventDefault()
+    const codigo = nextTramiteRadicado('ESTRAT-GIR')
+    const hoy = new Date().toISOString().slice(0, 10)
+
+    addTramiteSecretaria('planeacion', {
+      id: `pla-${Date.now()}`,
+      radicado: codigo,
+      titulo: 'Certificado de Estratificación Socioeconómica (Estrato 3)',
+      solicitante: 'Carlos Eduardo Ramírez Flórez',
+      documentoSolicitante: 'Ref. Predial: ' + predial,
+      fecha: hoy,
+      estado: 'Aprobado',
+      prioridad: 'Baja',
+      tipoTramite: 'Certificación de Estratificación',
+      descripcion: `Expedición de estratificación para el predio con cédula catastral ${predial}.`,
+    })
+
     setCertificadoGenerado({
-      codigo: `ESTRAT-GIR-${Date.now().toString().slice(-6)}`,
+      codigo,
       estrato: 3,
       direccion: 'Carrera 25 No. 30-15, Casco Urbano, Girón',
       propietario: 'Carlos Eduardo Ramírez Flórez',

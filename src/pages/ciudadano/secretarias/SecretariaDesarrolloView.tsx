@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 export default function SecretariaDesarrolloView() {
   const [cedulaConsulta, setCedulaConsulta] = useState('63541289')
@@ -8,16 +9,34 @@ export default function SecretariaDesarrolloView() {
     estado: string
     cicloPago: string
     puntoPago: string
+    codigo: string
   } | null>(null)
 
   function handleConsultarSubsidio(e: React.FormEvent) {
     e.preventDefault()
+    const codigo = nextTramiteRadicado('SUB-SOC')
+    const hoy = new Date().toISOString().slice(0, 10)
+
+    addTramiteSecretaria('desarrollo-social', {
+      id: `soc-${Date.now()}`,
+      radicado: codigo,
+      titulo: 'Verificación Subsidio Adulto Mayor / Colombia Mayor',
+      solicitante: 'Esperanza Gómez de Mantilla',
+      documentoSolicitante: cedulaConsulta,
+      fecha: hoy,
+      estado: 'Aprobado',
+      prioridad: 'Media',
+      tipoTramite: 'Subsidio Social Adulto Mayor',
+      descripcion: `Validación de giro para cédula ${cedulaConsulta}. Punto de cobro autorizado asignado en Efecty Parque Principal.`,
+    })
+
     setResultadoSubsidio({
       nombre: 'Esperanza Gómez de Mantilla',
       programa: 'Programa Colombia Mayor · Girón',
       estado: 'Beneficiario Activo - Giro Disponible',
       cicloPago: 'Ciclo 09 - Septiembre 2026',
       puntoPago: 'Efecty Parque Principal Girón (Calle 30)',
+      codigo,
     })
   }
 

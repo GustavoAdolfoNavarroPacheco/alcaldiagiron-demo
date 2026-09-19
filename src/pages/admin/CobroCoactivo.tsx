@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { getDeudores } from '../../data/storage'
+import { useMemo, useState, useEffect } from 'react'
+import { getDeudores, ingestarProximoDeudor, STORAGE_EVENT } from '../../data/storage'
 import { nivelUrgenciaDeudor, type Deudor, type NivelUrgencia, type OficioHistorial } from '../../types'
 import { formatCOP, formatFecha } from '../../data/format'
 import { DeudorUrgenciaBadge } from '../../components/SemaforoBadge'
@@ -18,6 +18,52 @@ type CriterioOrden = 'mayor-deuda' | 'menor-deuda' | 'nombre-az'
 export default function CobroCoactivo() {
   const [listaDeudores, setListaDeudores] = useState<Deudor[]>(() => getDeudores())
   const [seleccionadoId, setSeleccionadoId] = useState<string | null>(null)
+
+  // Estado de ingesta y sincronización continua
+  const [autoSync, setAutoSync] = useState<boolean>(true)
+  const [sincronizando, setSincronizando] = useState<boolean>(false)
+  const [ultimaIngestaMensaje, setUltimaIngestaMensaje] = useState<string | null>(null)
+
+  // Sincronización en vivo con storage
+  useEffect(() => {
+    const recargar = () => setListaDeudores(getDeudores())
+    window.addEventListener(STORAGE_EVENT, recargar)
+    window.addEventListener('storage', recargar)
+    return () => {
+      window.removeEventListener(STORAGE_EVENT, recargar)
+      window.removeEventListener('storage', recargar)
+    }
+  }, [])
+
+  // Ingesta automática progresiva en segundo plano cada 10 segundos
+  useEffect(() => {
+    if (!autoSync) return
+
+    const intervalId = window.setInterval(() => {
+      const res = ingestarProximoDeudor()
+      if (res.exito && res.deudorIngestado) {
+        setUltimaIngestaMensaje(
+          `Expediente ${res.deudorIngestado.id} (${res.deudorIngestado.nombre}) centralizado desde ${res.deudorIngestado.fuenteOrigen ?? 'Bases Externas'}.`,
+        )
+      }
+    }, 10000)
+
+    return () => window.clearInterval(intervalId)
+  }, [autoSync])
+
+  const handleSincronizarManual = () => {
+    setSincronizando(true)
+    setTimeout(() => {
+      const res = ingestarProximoDeudor()
+      if (res.exito && res.deudorIngestado) {
+        setUltimaIngestaMensaje(
+          `Expediente ${res.deudorIngestado.id} (${res.deudorIngestado.nombre}) cargado desde ${res.deudorIngestado.fuenteOrigen ?? 'Bases Externas'}.`,
+        )
+      }
+      setSincronizando(false)
+    }, 400)
+  }
+
 
   // Estados de Filtros
   const [busqueda, setBusqueda] = useState('')
@@ -128,6 +174,64 @@ export default function CobroCoactivo() {
         <p className="mt-0.5 text-xs text-slate-500">
           Administración judicial de cartera morosa y fiscalización de obligaciones tributarias en San Juan de Girón.
         </p>
+      </div>
+
+      {/* Barra de Sincronización Automática e Interoperabilidad en Vivo */}
+      <div className="rounded-xl border border-emerald-200/90 bg-emerald-50/70 p-4 shadow-xs">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start sm:items-center gap-3">
+            <span className="relative mt-1 sm:mt-0 flex h-3 w-3 shrink-0">
+              {autoSync && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              )}
+              <span
+                className={`relative inline-flex rounded-full h-3 w-3 ${
+                  autoSync ? 'bg-emerald-600' : 'bg-slate-400'
+                }`}
+              ></span>
+            </span>
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-xs font-bold text-emerald-950">
+                  {autoSync ? 'Sincronización Automática Activa' : 'Sincronización Automática en Pausa'}
+                </h2>
+                <span className="inline-flex items-center rounded-full bg-emerald-200/70 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+                  {listaDeudores.length} expedientes centralizados
+                </span>
+                <span className="inline-flex items-center rounded bg-white/80 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 border border-emerald-200">
+                  Fuentes: Predial • SIMIT • ICA • Policía
+                </span>
+              </div>
+              <p className="mt-0.5 text-[11px] text-emerald-800">
+                {ultimaIngestaMensaje ??
+                  'Carga continua de expedientes morosos provenientes de dependencias y rentas municipales de San Juan de Girón.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setAutoSync(!autoSync)}
+              className={`rounded-lg px-2.5 py-1.5 text-xs font-medium border transition-colors ${
+                autoSync
+                  ? 'border-emerald-300 bg-white text-emerald-800 hover:bg-emerald-100'
+                  : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              {autoSync ? '⏸ Pausar Auto-Carga' : '▶ Reanudar Auto-Carga'}
+            </button>
+            <button
+              type="button"
+              onClick={handleSincronizarManual}
+              disabled={sincronizando}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-emerald-800 transition-colors disabled:opacity-50"
+            >
+              <span className={sincronizando ? 'animate-spin' : ''}>↻</span>
+              Sincronizar Cartera Ahora
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Barra de Búsqueda y Filtros Unificada Enterprise */}
@@ -274,7 +378,14 @@ export default function CobroCoactivo() {
                     <p className="text-[11px] text-slate-400 font-mono">CC/NIT: {d.documento}</p>
                   </td>
                   <td className="px-5 py-3.5">
-                    <span className="font-medium text-slate-800">{d.concepto}</span>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-medium text-slate-800">{d.concepto}</span>
+                      {d.fuenteOrigen && (
+                        <span className="inline-flex items-center rounded-md bg-emerald-100/90 text-emerald-800 px-1.5 py-0.5 text-[10px] font-medium border border-emerald-200/60">
+                          {d.fuenteOrigen}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-[11px] text-slate-400">{d.predios.length} predio(s) vinculados</p>
                   </td>
                   <td className="px-5 py-3.5">

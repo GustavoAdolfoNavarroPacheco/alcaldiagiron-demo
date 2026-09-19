@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { PQRS, TipoSolicitudPQRS } from '../../types'
-import { addPQRS, nextRadicadoNumber } from '../../data/storage'
+import type { TramiteSecretaria } from '../../types/secretarias'
+import { addPQRS, addTramiteSecretaria, nextRadicadoNumber } from '../../data/storage'
 import SelloRadicado from '../../components/SelloRadicado'
 import CustomSelect from '../../components/CustomSelect'
 
@@ -16,12 +17,35 @@ const TIPO_DESCRIPCIONES: Record<TipoSolicitudPQRS, string> = {
 }
 
 const DEPENDENCIAS = [
+  'Secretaría de Salud',
   'Secretaría de Hacienda',
   'Cobro Coactivo',
-  'Atención al Ciudadano',
+  'Secretaría de Tránsito y Transporte',
+  'Secretaría de Ordenamiento Territorial',
+  'Secretaría de Seguridad, Convivencia y Gestión del Riesgo',
+  'Secretaría de Desarrollo Social',
+  'Secretaría de Gobierno',
+  'Secretaría de Educación',
+  'Secretaría de Infraestructura',
   'Secretaría de Planeación',
-  'Secretaría TIC',
+  'Secretaría de Cultura, Turismo y Deporte',
+  'Atención al Ciudadano / Ventanilla Única',
 ]
+
+const DEPENDENCIA_A_SLUG: Record<string, string> = {
+  'Secretaría de Salud': 'salud',
+  'Secretaría de Hacienda': 'hacienda',
+  'Cobro Coactivo': 'hacienda',
+  'Secretaría de Tránsito y Transporte': 'transito-transporte',
+  'Secretaría de Ordenamiento Territorial': 'ordenamiento-territorial',
+  'Secretaría de Seguridad, Convivencia y Gestión del Riesgo': 'seguridad-gestion-riesgo',
+  'Secretaría de Desarrollo Social': 'desarrollo-social',
+  'Secretaría de Gobierno': 'gobierno',
+  'Secretaría de Educación': 'educacion',
+  'Secretaría de Infraestructura': 'infraestructura',
+  'Secretaría de Planeación': 'planeacion',
+  'Secretaría de Cultura, Turismo y Deporte': 'cultura-turismo-deporte',
+}
 
 const PLAZO_DIAS: Record<TipoSolicitudPQRS, number> = {
   Petición: 15,
@@ -66,50 +90,71 @@ export default function RadicarPQRS() {
       archivoAdjunto: archivo,
       dependencia,
     }
+
+    // 1. Guardar en Ventanilla Única General
     addPQRS(nueva)
+
+    // 2. Si corresponde a una secretaría específica, registrar también en su despacho
+    const slug = DEPENDENCIA_A_SLUG[dependencia]
+    if (slug) {
+      const tramiteSecretaria: TramiteSecretaria = {
+        id: `trm-${nueva.id}`,
+        radicado: nueva.radicado,
+        titulo: `[PQRS - ${nueva.tipo}] ${nueva.asunto.slice(0, 45)}...`,
+        solicitante: nueva.solicitante,
+        documentoSolicitante: nueva.documentoSolicitante,
+        fecha: nueva.fechaRadicacion,
+        estado: 'En Trámite',
+        prioridad: nueva.tipo === 'Denuncia' || nueva.tipo === 'Reclamo' ? 'Alta' : 'Media',
+        tipoTramite: `PQRS / ${nueva.tipo}`,
+        descripcion: nueva.asunto,
+      }
+      addTramiteSecretaria(slug, tramiteSecretaria)
+    }
+
     setResultado(nueva)
   }
 
   // Vista de confirmación con certificado de radicación oficial
   if (resultado) {
     return (
-      <div className="space-y-8 animate-fade-up">
+      <div className="space-y-6">
         {/* Banner de éxito */}
-        <div className="rounded-2xl border border-girverde/20 bg-girverde/5 p-6 sm:p-8">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-girverde text-white shadow-glow-verde">
-                <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-xs">
+                <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               </div>
               <div>
-                <span className="eyebrow text-girverde-deep font-semibold">Radicación Exitosa</span>
-                <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Radicación Exitosa</span>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">
                   Solicitud Registrada Oficialmente
                 </h1>
-                <p className="text-xs text-ink-faint mt-1">
-                  Su trámite ha entrado formalmente en el sistema de gestión documental del municipio.
+                <p className="text-xs text-slate-600 mt-0.5">
+                  Su trámite ha entrado formalmente en el sistema de correspondencia y gestión documental del municipio.
                 </p>
               </div>
             </div>
 
-            <span className="rounded-full border border-girverde/30 bg-girverde/10 px-4 py-1.5 font-mono text-xs font-semibold text-girverde-deep">
+            <span className="rounded-md border border-emerald-300 bg-white px-3 py-1 font-mono text-xs font-semibold text-emerald-700">
               Estado: En proceso
             </span>
           </div>
         </div>
 
         {/* Detalle del comprobante en dos columnas balanceadas */}
-        <div className="grid gap-8 lg:grid-cols-12">
+        <div className="grid gap-6 lg:grid-cols-12">
           {/* Tarjeta del certificado oficial */}
-          <div className="lg:col-span-7 rounded-2xl border border-ink/8 bg-paper-card p-6 sm:p-8 shadow-card">
-            <div className="border-b border-ink/8 pb-5 flex items-center justify-between">
+          <div className="lg:col-span-7 rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
+            <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
               <div>
-                <p className="font-display font-semibold text-lg text-ink">Comprobante de Radicación</p>
-                <p className="text-xs text-ink-faint">Ventanilla Única · Alcaldía de Girón</p>
+                <p className="text-base font-bold text-slate-900">Comprobante de Radicación</p>
+                <p className="text-xs text-slate-400">Ventanilla Única Digital · Alcaldía de Girón</p>
               </div>
-              <span className="font-mono text-xs font-semibold text-vinotinto bg-vinotinto/10 px-3 py-1 rounded-md">
+              <span className="font-mono text-[11px] font-semibold text-vinotinto bg-vinotinto/10 px-2.5 py-1 rounded-md">
                 Ley 1755 de 2015
               </span>
             </div>
@@ -118,49 +163,52 @@ export default function RadicarPQRS() {
               <SelloRadicado radicado={resultado.radicado} fecha={resultado.fechaRadicacion} />
             </div>
 
-            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl bg-paper p-5 border border-ink/5 text-sm">
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 rounded-lg bg-slate-50 p-4 border border-slate-100 text-xs">
               <div>
-                <dt className="text-xs text-ink-faint">Número de Radicado</dt>
-                <dd className="font-mono text-base font-bold text-ink">{resultado.radicado}</dd>
+                <dt className="text-slate-400">Número de Radicado</dt>
+                <dd className="font-mono text-base font-bold text-slate-900 mt-0.5">{resultado.radicado}</dd>
               </div>
               <div>
-                <dt className="text-xs text-ink-faint">Dependencia Asignada</dt>
-                <dd className="font-medium text-ink">{resultado.dependencia}</dd>
+                <dt className="text-slate-400">Dependencia Asignada</dt>
+                <dd className="font-semibold text-slate-800 mt-0.5">{resultado.dependencia}</dd>
               </div>
               <div>
-                <dt className="text-xs text-ink-faint">Tipo de Solicitud</dt>
-                <dd className="font-medium text-ink">{resultado.tipo}</dd>
+                <dt className="text-slate-400">Tipo de Solicitud</dt>
+                <dd className="font-semibold text-slate-800 mt-0.5">{resultado.tipo}</dd>
               </div>
               <div>
-                <dt className="text-xs text-ink-faint">Término Legal de Respuesta</dt>
-                <dd className="font-semibold text-vinotinto">{PLAZO_DIAS[resultado.tipo]} días hábiles</dd>
+                <dt className="text-slate-400">Término Legal de Respuesta</dt>
+                <dd className="font-semibold text-vinotinto mt-0.5">{PLAZO_DIAS[resultado.tipo]} días hábiles</dd>
               </div>
               <div>
-                <dt className="text-xs text-ink-faint">Fecha de Radicación</dt>
-                <dd className="font-medium text-ink">{resultado.fechaRadicacion}</dd>
+                <dt className="text-slate-400">Fecha de Radicación</dt>
+                <dd className="font-mono text-slate-700 mt-0.5">{resultado.fechaRadicacion}</dd>
               </div>
               <div>
-                <dt className="text-xs text-ink-faint">Fecha Límite Estimada</dt>
-                <dd className="font-medium text-ink">{resultado.fechaLimite}</dd>
+                <dt className="text-slate-400">Fecha Límite Estimada</dt>
+                <dd className="font-mono text-slate-700 mt-0.5">{resultado.fechaLimite}</dd>
               </div>
-              <div className="sm:col-span-2 pt-2 border-t border-ink/5">
-                <dt className="text-xs text-ink-faint">Peticionario</dt>
-                <dd className="font-medium text-ink">{resultado.solicitante} (Doc: {resultado.documentoSolicitante})</dd>
+              <div className="sm:col-span-2 pt-2 border-t border-slate-200">
+                <dt className="text-slate-400">Peticionario</dt>
+                <dd className="font-medium text-slate-900 mt-0.5">{resultado.solicitante} (Doc: {resultado.documentoSolicitante})</dd>
               </div>
               <div className="sm:col-span-2">
-                <dt className="text-xs text-ink-faint">Asunto</dt>
-                <dd className="font-medium text-ink text-xs leading-relaxed">{resultado.asunto}</dd>
+                <dt className="text-slate-400">Asunto</dt>
+                <dd className="text-slate-700 text-xs leading-relaxed mt-0.5">{resultado.asunto}</dd>
               </div>
             </dl>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/ciudadano/consultar" className="btn-vinotinto text-xs flex-1 text-center">
+              <Link
+                to="/ciudadano/consultar"
+                className="inline-flex items-center justify-center rounded-lg bg-vinotinto px-5 py-2 text-xs font-semibold text-white hover:bg-vinotinto-deep transition-colors shadow-2xs flex-1 text-center"
+              >
                 Consultar este radicado
               </Link>
               <button
                 type="button"
                 onClick={() => setResultado(null)}
-                className="btn-ghost text-xs flex-1 text-center"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors flex-1 text-center"
               >
                 Radicar otra solicitud
               </button>
@@ -168,48 +216,46 @@ export default function RadicarPQRS() {
           </div>
 
           {/* Panel de instrucciones y próximos pasos */}
-          <div className="lg:col-span-5 space-y-6">
-            <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card">
-              <h3 className="font-display font-semibold text-base text-ink">¿Qué sucede a continuación?</h3>
-              <p className="mt-1 text-xs text-ink-faint">Pasos del proceso de atención de su trámite:</p>
+          <div className="lg:col-span-5 space-y-5">
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs">
+              <h3 className="text-sm font-bold text-slate-900">¿Qué sucede a continuación?</h3>
+              <p className="mt-1 text-xs text-slate-500">Pasos del proceso de atención de su trámite:</p>
 
-              <ol className="mt-4 space-y-4 text-xs">
+              <ol className="mt-4 space-y-3 text-xs">
                 <li className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-vinotinto text-white font-mono text-[11px] font-bold">
                     1
                   </span>
                   <div>
-                    <p className="font-semibold text-ink">Asignación y reparto</p>
-                    <p className="text-ink-faint mt-0.5">La solicitud es remitida inmediatamente al despacho de {resultado.dependencia}.</p>
+                    <p className="font-semibold text-slate-800">Radicación Formal</p>
+                    <p className="text-slate-500 leading-relaxed text-[11px] mt-0.5">
+                      Su solicitud fue ingresada y sellada digitalmente en el sistema institucional.
+                    </p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-vinotinto text-white font-mono text-[11px] font-bold">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-mono text-[11px] font-bold">
                     2
                   </span>
                   <div>
-                    <p className="font-semibold text-ink">Estudio de fondo</p>
-                    <p className="text-ink-faint mt-0.5">El equipo jurídico o técnico evalúa los hechos y antecedentes dentro de los {PLAZO_DIAS[resultado.tipo]} días hábiles.</p>
+                    <p className="font-semibold text-slate-800">Reparto Técnico</p>
+                    <p className="text-slate-500 leading-relaxed text-[11px] mt-0.5">
+                      Se traslada al despacho de <strong>{resultado.dependencia}</strong> para emisión de concepto.
+                    </p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-vinotinto text-white font-mono text-[11px] font-bold">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-700 font-mono text-[11px] font-bold">
                     3
                   </span>
                   <div>
-                    <p className="font-semibold text-ink">Notificación de respuesta</p>
-                    <p className="text-ink-faint mt-0.5">Podrá consultar la resolución oficial en el módulo de Consultar Estado ingresando su radicado.</p>
+                    <p className="font-semibold text-slate-800">Notificación al Ciudadano</p>
+                    <p className="text-slate-500 leading-relaxed text-[11px] mt-0.5">
+                      Recibirá el acto administrativo o respuesta de fondo dentro de los <strong>{PLAZO_DIAS[resultado.tipo]} días hábiles</strong>.
+                    </p>
                   </div>
                 </li>
               </ol>
-            </div>
-
-            <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card text-xs space-y-2">
-              <p className="font-semibold text-ink">Garantía Constitucional</p>
-              <p className="text-ink-faint leading-relaxed">
-                De conformidad con el artículo 23 de la Constitución Política y la Ley 1755 de 2015,
-                toda persona tiene derecho a presentar peticiones respetuosas a las autoridades y a obtener pronta resolución.
-              </p>
             </div>
           </div>
         </div>
@@ -219,47 +265,47 @@ export default function RadicarPQRS() {
 
   // Vista del formulario con distribución balanceada en 2 columnas
   return (
-    <div className="space-y-8 animate-fade-up">
+    <div className="space-y-6">
       {/* Encabezado descriptivo */}
-      <div className="border-b border-ink/8 pb-5">
+      <div className="border-b border-slate-200 pb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span className="eyebrow text-vinotinto">Ventanilla Única Oficial</span>
-            <h1 className="font-display text-2xl sm:text-3xl font-bold text-ink">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Ventanilla Única Oficial</span>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               Radicar una PQRS
             </h1>
           </div>
-          <div className="flex items-center gap-2 rounded-full border border-ink/10 bg-paper-card px-3.5 py-1 text-xs text-ink-faint">
-            <span className="h-2 w-2 rounded-full bg-vinotinto" />
+          <div className="flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-2xs">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
             <span>Sistema oficial de atención al ciudadano</span>
           </div>
         </div>
-        <p className="mt-2 text-sm text-ink-faint max-w-2xl">
+        <p className="mt-1.5 text-xs text-slate-500 max-w-2xl leading-relaxed">
           Diligencie el siguiente formulario para ingresar formalmente su petición, queja, reclamo, sugerencia o denuncia.
           Campos identificados con asterisco (*) son de diligenciamiento obligatorio.
         </p>
       </div>
 
       {/* Grid de 2 columnas: Formulario (8 columnas) + Panel de Guía (4 columnas) */}
-      <div className="grid gap-8 lg:grid-cols-12">
+      <div className="grid gap-6 lg:grid-cols-12">
         {/* Columna Principal: Formulario estructurado */}
-        <form onSubmit={handleSubmit} className="lg:col-span-8 space-y-8">
+        <form onSubmit={handleSubmit} className="lg:col-span-8 space-y-6">
           {/* Bloque 1: Tipo de solicitud */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 sm:p-7 shadow-card space-y-4">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-ink/5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-vinotinto text-white font-mono text-xs font-bold">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-vinotinto text-white font-mono text-xs font-bold">
                 1
               </span>
               <div>
-                <h2 className="font-display text-base font-semibold text-ink">Clasificación del Trámite</h2>
-                <p className="text-xs text-ink-faint">Seleccione el tipo de trámite y la secretaría competente</p>
+                <h2 className="text-sm font-bold text-slate-900">Clasificación del Trámite</h2>
+                <p className="text-[11px] text-slate-400">Seleccione el tipo de trámite y la secretaría competente</p>
               </div>
             </div>
 
             {/* Selector interactivo de tipos de PQRS con tiempo legal */}
             <div>
-              <span className="block text-xs font-medium text-ink mb-2">Tipo de trámite *</span>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <span className="block text-xs font-medium text-slate-700 mb-2">Tipo de trámite *</span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {TIPOS.map((t) => {
                   const isSelected = tipo === t
                   return (
@@ -267,30 +313,28 @@ export default function RadicarPQRS() {
                       key={t}
                       type="button"
                       onClick={() => setTipo(t)}
-                      className={`flex flex-col text-left p-3 rounded-xl border transition-all duration-200 ${
+                      className={`flex flex-col text-left p-3 rounded-lg border transition-all text-xs ${
                         isSelected
-                          ? 'border-vinotinto bg-vinotinto-soft/80 shadow-sm'
-                          : 'border-ink/10 bg-paper hover:border-vinotinto/30'
+                          ? 'border-vinotinto bg-vinotinto/5 text-vinotinto font-semibold shadow-2xs'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
                       }`}
                     >
-                      <span className={`text-xs font-semibold ${isSelected ? 'text-vinotinto' : 'text-ink'}`}>
-                        {t}
-                      </span>
-                      <span className="font-mono text-[10px] text-ink-faint mt-1">
+                      <span className="font-semibold">{t}</span>
+                      <span className="font-mono text-[10px] text-slate-400 mt-1">
                         {PLAZO_DIAS[t]} días hábiles
                       </span>
                     </button>
                   )
                 })}
               </div>
-              <p className="mt-2 text-xs text-ink-faint italic">
+              <p className="mt-2 text-[11px] text-slate-500 italic">
                 {TIPO_DESCRIPCIONES[tipo]}
               </p>
             </div>
 
             {/* Dependencia destino */}
             <div>
-              <label htmlFor="select-dependencia" className="block text-xs font-medium text-ink mb-1.5">
+              <label htmlFor="select-dependencia" className="block text-xs font-medium text-slate-700 mb-1.5">
                 Dependencia o Secretaría Destino *
               </label>
               <CustomSelect
@@ -303,20 +347,20 @@ export default function RadicarPQRS() {
           </div>
 
           {/* Bloque 2: Datos del Peticionario */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 sm:p-7 shadow-card space-y-4">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-ink/5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-vinotinto text-white font-mono text-xs font-bold">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-vinotinto text-white font-mono text-xs font-bold">
                 2
               </span>
               <div>
-                <h2 className="font-display text-base font-semibold text-ink">Datos del Ciudadano Solicitante</h2>
-                <p className="text-xs text-ink-faint">Información para contacto y notificación de la respuesta</p>
+                <h2 className="text-sm font-bold text-slate-900">Datos del Ciudadano Solicitante</h2>
+                <p className="text-[11px] text-slate-400">Información para contacto y notificación formal</p>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="input-solicitante" className="block text-xs font-medium text-ink mb-1.5">
+                <label htmlFor="input-solicitante" className="block text-xs font-medium text-slate-700 mb-1.5">
                   Nombre completo del solicitante *
                 </label>
                 <input
@@ -325,12 +369,12 @@ export default function RadicarPQRS() {
                   value={solicitante}
                   onChange={(e) => setSolicitante(e.target.value)}
                   placeholder="Ej. Juan Carlos Pérez Gómez"
-                  className="field"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label htmlFor="input-documento" className="block text-xs font-medium text-ink mb-1.5">
+                <label htmlFor="input-documento" className="block text-xs font-medium text-slate-700 mb-1.5">
                   Documento de identidad (C.C. o NIT) *
                 </label>
                 <input
@@ -339,26 +383,26 @@ export default function RadicarPQRS() {
                   value={documento}
                   onChange={(e) => setDocumento(e.target.value)}
                   placeholder="Ej. 1098765432"
-                  className="field font-mono"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 font-mono text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
                 />
               </div>
             </div>
           </div>
 
           {/* Bloque 3: Detalle de los Hechos */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 sm:p-7 shadow-card space-y-4">
-            <div className="flex items-center gap-2.5 pb-2 border-b border-ink/5">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-vinotinto text-white font-mono text-xs font-bold">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-vinotinto text-white font-mono text-xs font-bold">
                 3
               </span>
               <div>
-                <h2 className="font-display text-base font-semibold text-ink">Detalle y Contenido de la Solicitud</h2>
-                <p className="text-xs text-ink-faint">Explique de forma clara los hechos que motivan su requerimiento</p>
+                <h2 className="text-sm font-bold text-slate-900">Detalle y Contenido de la Solicitud</h2>
+                <p className="text-[11px] text-slate-400">Explique con claridad los antecedentes que motivan su trámite</p>
               </div>
             </div>
 
             <div>
-              <label htmlFor="textarea-asunto" className="block text-xs font-medium text-ink mb-1.5">
+              <label htmlFor="textarea-asunto" className="block text-xs font-medium text-slate-700 mb-1.5">
                 Descripción detallada de la solicitud *
               </label>
               <textarea
@@ -367,40 +411,40 @@ export default function RadicarPQRS() {
                 value={asunto}
                 onChange={(e) => setAsunto(e.target.value)}
                 rows={5}
-                placeholder="Describa con la mayor precisión posible el motivo, antecedentes, dirección o detalles de su petición..."
-                className="field resize-none leading-relaxed"
+                placeholder="Describa con la mayor precisión posible los antecedentes, predio, motivo o petición puntual..."
+                className="w-full rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all resize-none leading-relaxed"
               />
             </div>
 
             {/* Adjuntar documento probatorio */}
             <div>
-              <span className="block text-xs font-medium text-ink mb-1.5">
+              <span className="block text-xs font-medium text-slate-700 mb-1.5">
                 Documentos de soporte o anexos (opcional)
               </span>
-              <div className="rounded-xl border border-dashed border-ink/20 p-4 text-center bg-paper/50 hover:bg-paper transition-colors">
+              <div className="rounded-lg border border-dashed border-slate-300 p-4 text-center bg-slate-50/50 hover:bg-slate-50 transition-colors">
                 <input
                   type="file"
                   id="file-upload"
                   onChange={(e) => setArchivo(e.target.files?.[0]?.name ?? null)}
                   className="hidden"
                 />
-                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center justify-center gap-1.5">
-                  <svg className="h-7 w-7 text-ink-faint/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center justify-center gap-1">
+                  <svg className="h-6 w-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
-                  <span className="text-xs font-medium text-vinotinto underline">
-                    Haga clic aquí para seleccionar un archivo
+                  <span className="text-xs font-semibold text-vinotinto hover:underline">
+                    Haga clic aquí para adjuntar archivo
                   </span>
-                  <span className="text-[11px] text-ink-faint">Formatos admitidos: PDF, JPG, PNG (hasta 10 MB)</span>
+                  <span className="text-[11px] text-slate-400">Formatos admitidos: PDF, JPG, PNG (máx. 10 MB)</span>
                 </label>
                 {archivo && (
-                  <div className="mt-3 inline-flex items-center gap-2 rounded-lg bg-girverde/10 px-3 py-1.5 text-xs text-girverde-deep font-mono">
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <div className="mt-3 inline-flex items-center gap-2 rounded-md bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs text-emerald-700 font-mono">
+                    <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    <span>Archivo adjunto: {archivo}</span>
+                    <span>Archivo cargado: {archivo}</span>
                   </div>
                 )}
               </div>
@@ -408,30 +452,30 @@ export default function RadicarPQRS() {
           </div>
 
           {/* Bloque 4: Autorización y Envío */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card space-y-5">
-            <label className="flex items-start gap-3 cursor-pointer text-xs text-ink-soft leading-relaxed">
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600 leading-relaxed">
               <input
                 type="checkbox"
                 required
                 checked={autoriza}
                 onChange={(e) => setAutoriza(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-ink/30 text-vinotinto focus:ring-vinotinto/40"
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-vinotinto focus:ring-vinotinto"
               />
               <span>
                 Declaro bajo la gravedad de juramento que la información suministrada es verídica y
-                autorizo a la Alcaldía Municipal de San Juan Girón para el tratamiento de mis datos personales
+                autorizo a la Alcaldía Municipal de San Juan de Girón para el tratamiento de mis datos personales
                 conforme a la Ley 1581 de 2012 para los fines de trámite y respuesta de esta PQRS.
               </span>
             </label>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-ink/5">
-              <p className="text-[11px] text-ink-faint">
-                Al radicar, recibirá su comprobante oficial y constancia con sello de tiempo.
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-100">
+              <p className="text-[11px] text-slate-400">
+                Al radicar, recibirá su constancia oficial con sello cronológico digital.
               </p>
               <button
                 type="submit"
                 disabled={!autoriza}
-                className="btn-vinotinto w-full sm:w-auto px-8 disabled:opacity-50 disabled:pointer-events-none"
+                className="inline-flex items-center justify-center rounded-lg bg-vinotinto px-6 py-2.5 text-xs font-semibold text-white hover:bg-vinotinto-deep transition-colors shadow-2xs w-full sm:w-auto disabled:opacity-50 disabled:pointer-events-none"
               >
                 Radicar Solicitud Oficial
               </button>
@@ -440,69 +484,63 @@ export default function RadicarPQRS() {
         </form>
 
         {/* Columna Lateral: Panel de Orientación y Garantías (4 columnas) */}
-        <aside className="lg:col-span-4 space-y-6">
+        <aside className="lg:col-span-4 space-y-5">
           {/* Términos Legales del tipo activo */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card">
-            <div className="flex items-center gap-2 text-vinotinto mb-2">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
+            <div className="flex items-center gap-2 text-vinotinto mb-1.5">
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
-              <h3 className="font-display font-semibold text-sm">Término de Respuesta</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Término de Respuesta</h3>
             </div>
-            <p className="text-2xl font-bold font-mono text-ink">
+            <p className="text-2xl font-bold font-mono text-slate-900">
               {PLAZO_DIAS[tipo]} días hábiles
             </p>
-            <p className="text-xs text-ink-faint mt-1 leading-relaxed">
-              Plazo normativo para <strong>{tipo}s</strong> estipulado por el Código de Procedimiento Administrativo y de lo Contencioso Administrativo.
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+              Plazo normativo para <strong>{tipo}s</strong> estipulado por el Código de Procedimiento Administrativo.
             </p>
 
-            <div className="mt-4 pt-3 border-t border-ink/5 space-y-2 text-xs text-ink-soft">
+            <div className="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-ink-faint">Marco legal:</span>
-                <span className="font-mono text-ink">Ley 1755 de 2015</span>
+                <span className="text-slate-400">Marco normativo:</span>
+                <span className="font-mono text-slate-700">Ley 1755 de 2015</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-ink-faint">Dependencia:</span>
-                <span className="font-medium text-ink truncate max-w-[150px]">{dependencia}</span>
+                <span className="text-slate-400">Despacho:</span>
+                <span className="font-medium text-slate-800 truncate max-w-[150px]">{dependencia}</span>
               </div>
             </div>
           </div>
 
           {/* Recomendaciones para el ciudadano */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card space-y-3">
-            <h3 className="font-display font-semibold text-sm text-ink">Recomendaciones Clave</h3>
-            <ul className="space-y-2.5 text-xs text-ink-faint">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs space-y-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Recomendaciones Clave</h3>
+            <ul className="space-y-2 text-xs text-slate-600">
               <li className="flex items-start gap-2">
-                <svg className="h-4 w-4 text-girverde-deep shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <span>Indique direcciones y datos de contacto precisos para evitar devoluciones.</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
+                <span>Indique teléfonos y correos actualizados para evitar devoluciones.</span>
               </li>
               <li className="flex items-start gap-2">
-                <svg className="h-4 w-4 text-girverde-deep shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <span>Guarde el número de radicado al finalizar para rastrear su respuesta.</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
+                <span>Conserve el código alfanumérico al finalizar para hacer seguimiento en línea.</span>
               </li>
               <li className="flex items-start gap-2">
-                <svg className="h-4 w-4 text-girverde-deep shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <span>Si el trámite es de cartera o cobro coactivo, elija Secretaría de Hacienda.</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
+                <span>Para cobro coactivo o impuestos, seleccione la Secretaría de Hacienda.</span>
               </li>
             </ul>
           </div>
 
           {/* Soporte y ayuda presencial */}
-          <div className="rounded-2xl border border-ink/8 bg-paper-card p-6 shadow-card text-xs space-y-3">
-            <h3 className="font-display font-semibold text-sm text-ink">¿Dudas con su radicación?</h3>
-            <p className="text-ink-faint leading-relaxed">
-              Puede acercarse a la Ventanilla Única de Atención al Ciudadano en el Palacio Municipal (Calle 30 No. 25-66).
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs text-xs space-y-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Atención Personalizada</h3>
+            <p className="text-slate-500 leading-relaxed">
+              Ventanilla Única de Atención en el Palacio Municipal (Calle 30 No. 25-66, Centro Histórico).
             </p>
-            <div className="pt-2 border-t border-ink/5">
-              <span className="block text-ink-faint">Línea de soporte telefónico:</span>
-              <span className="font-mono font-semibold text-ink text-sm">+57 (607) 646 3030</span>
+            <div className="pt-2 border-t border-slate-100">
+              <span className="block text-slate-400 text-[11px]">Línea telefónica directa:</span>
+              <span className="font-mono font-bold text-slate-800 text-xs">+57 (607) 646 3030</span>
             </div>
           </div>
         </aside>

@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import CustomSelect from '../../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const TRAMITES_URBANISTICOS = [
   { value: 'uso-suelo', label: 'Concepto y Certificado de Uso de Suelo', tiempo: '5 días hábiles' },
@@ -31,6 +33,21 @@ export default function SecretariaOrdenamientoView() {
   function handlePreclasificar(e: React.FormEvent) {
     e.preventDefault()
     const esCentro = sector.includes('Centro Histórico')
+    const codigoSolicitud = nextTramiteRadicado('SOT-URB')
+    const hoy = new Date().toISOString().slice(0, 10)
+
+    addTramiteSecretaria('ordenamiento-territorial', {
+      id: `sot-${Date.now()}`,
+      radicado: codigoSolicitud,
+      titulo: `Pre-dictamen Uso de Suelo: ${actividadPropuesta}`,
+      solicitante: 'Peticionario Urbanismo Girón',
+      documentoSolicitante: 'Consulta Predial',
+      fecha: hoy,
+      estado: 'En Trámite',
+      prioridad: 'Media',
+      tipoTramite: 'Concepto Uso de Suelo EOT',
+      descripcion: `Sector: ${sector}, Dirección: ${direccion}. Actividad: ${actividadPropuesta}. Preclasificación: Viable.`,
+    })
 
     setResultadoPredictamen({
       permitido: true,
@@ -48,7 +65,7 @@ export default function SecretariaOrdenamientoView() {
             'Paz y Salvo de Impuesto Predial 2026',
             'Plano básico de localización catastral',
           ],
-      codigoSolicitud: `SOT-PRE-${Date.now().toString().slice(-6)}`,
+      codigoSolicitud,
     })
   }
 

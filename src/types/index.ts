@@ -23,6 +23,8 @@ export interface Deudor {
   estadoProceso: string
   predios: Predio[]
   historialOficios: OficioHistorial[]
+  fuenteOrigen?: string
+  entidadEmisora?: string
 }
 
 export function nivelUrgenciaDeudor(deudor: Deudor): NivelUrgencia {
@@ -52,6 +54,7 @@ export interface PQRS {
   estado: EstadoPQRS
   archivoAdjunto: string | null
   dependencia: string
+  respuestaOficial?: string
 }
 
 export function auditoriaPQRS(pqrs: PQRS): AuditoriaPQRS {

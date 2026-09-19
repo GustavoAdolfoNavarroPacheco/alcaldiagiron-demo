@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CustomSelect from '../../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const TIPOS_DANO = [
   'Hueco / Bache en malla vial vehicular',
@@ -40,7 +41,21 @@ export default function SecretariaInfraestructuraView() {
 
   function handleEnviarReporte(e: React.FormEvent) {
     e.preventDefault()
-    setTicketGenerado(`OBR-REP-2026-${Date.now().toString().slice(-5)}`)
+    const codigo = nextTramiteRadicado('OBR-REP')
+    const hoy = new Date().toISOString().slice(0, 10)
+    addTramiteSecretaria('infraestructura', {
+      id: `inf-${Date.now()}`,
+      radicado: codigo,
+      titulo: `Reporte Ciudadano: ${tipoReporte}`,
+      solicitante: barrio ? `Comunidad Barrio ${barrio}` : 'Ciudadano Vecino de Girón',
+      documentoSolicitante: 'Reporte Web Ciudadano',
+      fecha: hoy,
+      estado: 'En Revisión',
+      prioridad: 'Alta',
+      tipoTramite: 'Mantenimiento de Malla Vial y Alumbrado',
+      descripcion: `Tipo de reporte: ${tipoReporte}. Ubicación: Barrio ${barrio || 'No especificado'}, Dirección: ${direccion || 'No aportada'}.`,
+    })
+    setTicketGenerado(codigo)
   }
 
   return (

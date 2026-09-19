@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getSecretariaBySlug } from '../../data/secretariasData'
+import { getTramitesSecretaria, updateTramiteSecretaria, STORAGE_EVENT } from '../../data/storage'
 import type {
   EstadoTramiteSecretaria,
   EstadoRegistroSolucion,
@@ -21,25 +22,42 @@ export default function SecretariaDashboard() {
   // Estado local para permitir interacción y cambios de estado en tiempo real
   const [soluciones, setSoluciones] = useState<SolucionTecnicaSecretaria[]>(() => secretaria?.solucionesTecnicas ?? [])
   const [registroSeleccionado, setRegistroSeleccionado] = useState<RegistroSolucionIA | null>(null)
-  const [tramites, setTramites] = useState<TramiteSecretaria[]>(() => secretaria?.tramites ?? [])
+  const [tramites, setTramites] = useState<TramiteSecretaria[]>(() =>
+    slug ? getTramitesSecretaria(slug) : (secretaria?.tramites ?? []),
+  )
   const [tramiteSeleccionado, setTramiteSeleccionado] = useState<TramiteSecretaria | null>(null)
 
   // Filtros de búsqueda
   const [busqueda, setBusqueda] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('todos')
 
+  // Sincronización reactiva con la base de datos JSON de la secretaría
+  useEffect(() => {
+    if (!slug) return
+    const recargar = () => {
+      setTramites(getTramitesSecretaria(slug))
+    }
+    recargar()
+    window.addEventListener(STORAGE_EVENT, recargar)
+    window.addEventListener('storage', recargar)
+    return () => {
+      window.removeEventListener(STORAGE_EVENT, recargar)
+      window.removeEventListener('storage', recargar)
+    }
+  }, [slug])
+
   // Reiniciar estado si cambia de secretaría
-  useMemo(() => {
-    if (secretaria) {
+  useEffect(() => {
+    if (secretaria && slug) {
       setSoluciones(secretaria.solucionesTecnicas)
-      setTramites(secretaria.tramites)
+      setTramites(getTramitesSecretaria(slug))
       setPestanaActiva(secretaria.solucionesTecnicas[0]?.id ?? 'tramites-generales')
       setRegistroSeleccionado(null)
       setTramiteSeleccionado(null)
       setBusqueda('')
       setFiltroEstado('todos')
     }
-  }, [secretaria])
+  }, [secretaria, slug])
 
   if (!secretaria) {
     return (
@@ -453,9 +471,15 @@ export default function SecretariaDashboard() {
           nombreSecretaria={secretaria.nombre}
           onClose={() => setTramiteSeleccionado(null)}
           onActualizar={(nuevoEstado, respuesta) => {
-            setTramites((prev) =>
-              prev.map((t) => (t.id === tramiteSeleccionado.id ? { ...t, estado: nuevoEstado, respuestaOficial: respuesta } : t)),
-            )
+            if (slug) {
+              const actualizados = updateTramiteSecretaria(
+                slug,
+                tramiteSeleccionado.id,
+                nuevoEstado,
+                respuesta,
+              )
+              setTramites(actualizados)
+            }
             setTramiteSeleccionado(null)
           }}
         />

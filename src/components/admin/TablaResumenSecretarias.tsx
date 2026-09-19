@@ -41,17 +41,17 @@ export default function TablaResumenSecretarias({
 
       {/* Tabla Ejecutiva */}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left text-xs">
+        <table className="w-full min-w-[780px] border-collapse text-left text-xs">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-semibold text-slate-600">
               <th className="px-4 py-2.5">Secretaría de Despacho</th>
               <th className="px-4 py-2.5">Titular</th>
               <th className="px-3 py-2.5 text-center">Estado</th>
-              <th className="px-4 py-2.5 text-right">Presupuesto Asignado</th>
-              <th className="px-4 py-2.5 text-right">Ejecutado</th>
-              <th className="px-4 py-2.5 text-center">Avance</th>
-              <th className="px-3 py-2.5 text-center">Trámites</th>
-              <th className="px-3 py-2.5 text-right">Acción</th>
+              <th className="px-4 py-2.5 text-right whitespace-nowrap">Presupuesto Asignado</th>
+              <th className="px-4 py-2.5 text-right whitespace-nowrap">Ejecutado</th>
+              <th className="px-4 py-2.5 text-center whitespace-nowrap">Avance</th>
+              <th className="px-3 py-2.5 text-center whitespace-nowrap">Trámites</th>
+              <th className="px-4 py-2.5 text-right min-w-[76px] whitespace-nowrap">Acción</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -100,17 +100,17 @@ export default function TablaResumenSecretarias({
                   </td>
 
                   {/* Asignado */}
-                  <td className="px-4 py-3 text-right font-medium text-slate-700">
+                  <td className="px-4 py-3 text-right font-medium text-slate-700 whitespace-nowrap">
                     {formatCOP(fila.presupuestoAsignado)}
                   </td>
 
                   {/* Ejecutado */}
-                  <td className="px-4 py-3 text-right font-semibold text-slate-900">
+                  <td className="px-4 py-3 text-right font-semibold text-slate-900 whitespace-nowrap">
                     {formatCOP(fila.presupuestoEjecutado)}
                   </td>
 
                   {/* Avance */}
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 text-center whitespace-nowrap">
                     <div className="inline-flex items-center gap-2">
                       <div className="h-1.5 w-12 rounded-full bg-slate-100 overflow-hidden">
                         <div
@@ -126,15 +126,15 @@ export default function TablaResumenSecretarias({
                   </td>
 
                   {/* Trámites */}
-                  <td className="px-3 py-3 text-center font-semibold text-slate-800">
+                  <td className="px-3 py-3 text-center font-semibold text-slate-800 whitespace-nowrap">
                     {fila.casos}
                   </td>
 
                   {/* Botón Ver Dashboard */}
-                  <td className="px-3 py-3 text-right">
+                  <td className="px-4 py-3 text-right min-w-[76px] whitespace-nowrap">
                     <Link
                       to={`/admin/secretarias/${fila.slug}`}
-                      className="rounded bg-vinotinto/10 px-2 py-1 text-[11px] font-semibold text-vinotinto hover:bg-vinotinto hover:text-white transition-colors"
+                      className="inline-flex shrink-0 items-center justify-center rounded bg-vinotinto/10 px-2.5 py-1 text-[11px] font-semibold text-vinotinto hover:bg-vinotinto hover:text-white transition-colors"
                     >
                       Ver →
                     </Link>

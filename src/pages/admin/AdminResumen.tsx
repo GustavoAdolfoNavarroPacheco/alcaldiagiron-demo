@@ -197,7 +197,7 @@ export default function AdminResumen() {
       {/* Bloque Central en 2 Columnas (Tabla de Secretarías a la Izquierda + Donut de Inversión a la Derecha) */}
       <div className="grid gap-6 lg:grid-cols-12">
         {/* Columna Izquierda: Tabla Resumen de Secretarías (Portfolio Summary) */}
-        <div className="lg:col-span-7 flex flex-col justify-between">
+        <div className="lg:col-span-8 flex flex-col justify-between">
           <TablaResumenSecretarias
             filas={filasSecretarias}
             filaSeleccionadaId={hoverId}
@@ -208,7 +208,7 @@ export default function AdminResumen() {
         </div>
 
         {/* Columna Derecha: Gráfica Donut de Participación de Inversión */}
-        <div className="lg:col-span-5 flex flex-col justify-between">
+        <div className="lg:col-span-4 flex flex-col justify-between">
           <GraficaDonutMunicipal
             datos={datosDonut}
             titulo="Inversión por Secretaría"

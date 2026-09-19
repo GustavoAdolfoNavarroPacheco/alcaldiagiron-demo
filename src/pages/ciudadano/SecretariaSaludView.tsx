@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import CustomSelect from '../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../data/storage'
 import {
   ESTABLECIMIENTOS_IVC,
   INDICADORES_SIVIGILA,
@@ -60,7 +61,20 @@ export default function SecretariaSaludView() {
 
   function handleEnviarQuejaEPS(e: React.FormEvent) {
     e.preventDefault()
-    const codigoRadicado = `AUD-SALUD-${Date.now().toString().slice(-6)}`
+    const codigoRadicado = nextTramiteRadicado('AUD-SALUD')
+    const hoy = new Date().toISOString().slice(0, 10)
+    addTramiteSecretaria('salud', {
+      id: `salud-${Date.now()}`,
+      radicado: codigoRadicado,
+      titulo: `Auditoría EPS ${epsNombre}: ${tipoIncidente}`,
+      solicitante: afiliadoNombre.trim() || 'Ciudadano Afiliado',
+      documentoSolicitante: afiliadoDoc.trim() || 'No aportado',
+      fecha: hoy,
+      estado: 'En Trámite',
+      prioridad: 'Alta',
+      tipoTramite: 'Auditoría a EPS / IPS',
+      descripcion: `Incidente con ${epsNombre}. ${tipoIncidente}. Detalle: ${detalleIncidente}`,
+    })
     setQuejaEnviada(codigoRadicado)
   }
 

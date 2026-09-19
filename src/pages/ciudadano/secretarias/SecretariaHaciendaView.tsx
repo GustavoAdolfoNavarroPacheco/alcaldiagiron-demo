@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import CustomSelect from '../../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const ESTAMPILLAS_OPCIONES = [
   { value: 'pro-cultura', label: 'Estampilla Pro-Cultura (1.5%)', tarifa: 0.015 },
@@ -39,12 +41,27 @@ export default function SecretariaHaciendaView() {
     const base = parseFloat(valorContrato) || 0
     const tarifa = selec ? selec.tarifa : 0.015
     const valorLiquidado = Math.round(base * tarifa)
+    const codigoEstampilla = nextTramiteRadicado('EST-HAC')
+    const hoy = new Date().toISOString().slice(0, 10)
+
+    addTramiteSecretaria('hacienda', {
+      id: `hac-${Date.now()}`,
+      radicado: codigoEstampilla,
+      titulo: `Liquidación ${selec?.label || 'Estampilla'}: ${nombreContratista || 'Contratista'}`,
+      solicitante: nombreContratista.trim() || 'Contratista Gironés',
+      documentoSolicitante: nitContratista.trim() || 'No aportado',
+      fecha: hoy,
+      estado: 'Aprobado',
+      prioridad: 'Media',
+      tipoTramite: 'Estampilla Digital',
+      descripcion: `Contrato ${numeroContrato.trim() || 'S/N'}. Base imponible: $${base.toLocaleString('es-CO')}. Valor Liquidado: $${valorLiquidado.toLocaleString('es-CO')}.`,
+    })
 
     setEstampillaGenerada({
-      codigo: `EST-GIR-${Date.now().toString().slice(-6)}`,
+      codigo: codigoEstampilla,
       valor: valorLiquidado,
       nombreEstampilla: selec?.label || 'Estampilla Oficial',
-      fecha: new Date().toISOString().slice(0, 10),
+      fecha: hoy,
     })
   }
 

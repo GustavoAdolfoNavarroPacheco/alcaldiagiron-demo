@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { getPQRS } from '../../data/storage'
+import { useMemo, useState, useEffect } from 'react'
+import { getPQRS, savePQRS, STORAGE_EVENT } from '../../data/storage'
 import { auditoriaPQRS, type AuditoriaPQRS, type PQRS, type TipoSolicitudPQRS } from '../../types'
 import { formatFecha } from '../../data/format'
 import { PQRSAuditoriaBadge } from '../../components/SemaforoBadge'
@@ -7,6 +7,19 @@ import { PQRSAuditoriaBadge } from '../../components/SemaforoBadge'
 export default function VentanillaUnica() {
   const [listaItems, setListaItems] = useState<PQRS[]>(() => getPQRS())
   const [seleccionadoId, setSeleccionadoId] = useState<string | null>(null)
+
+  // Sincronización reactiva en vivo ante cualquier cambio en el almacenamiento
+  useEffect(() => {
+    const handleStorageUpdate = () => {
+      setListaItems(getPQRS())
+    }
+    window.addEventListener(STORAGE_EVENT, handleStorageUpdate)
+    window.addEventListener('storage', handleStorageUpdate)
+    return () => {
+      window.removeEventListener(STORAGE_EVENT, handleStorageUpdate)
+      window.removeEventListener('storage', handleStorageUpdate)
+    }
+  }, [])
 
   // Filtros
   const [busqueda, setBusqueda] = useState('')
@@ -92,19 +105,20 @@ export default function VentanillaUnica() {
   const seleccionado = listaItems.find((p) => p.id === seleccionadoId) ?? null
 
   const handleResolverPQRS = (id: string, respuestaTexto: string) => {
-    setListaItems((prev) =>
-      prev.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            estado: 'Resuelta',
-            fechaRespuesta: new Date().toISOString().split('T')[0],
-            archivoAdjunto: respuestaTexto ? 'RespuestaOficial_Firmada.pdf' : item.archivoAdjunto,
-          }
+    const actualizados = listaItems.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          estado: 'Resuelta' as const,
+          fechaRespuesta: new Date().toISOString().split('T')[0],
+          respuestaOficial: respuestaTexto.trim() || 'Se ha resuelto favorablemente y notificado al ciudadano conforme al procedimiento administrativo.',
+          archivoAdjunto: respuestaTexto ? 'RespuestaOficial_Firmada.pdf' : item.archivoAdjunto,
         }
-        return item
-      }),
-    )
+      }
+      return item
+    })
+    savePQRS(actualizados)
+    setListaItems(actualizados)
   }
 
   return (
@@ -456,15 +470,23 @@ function GestionRadicadoModal({
             </h3>
 
             {pqrs.estado === 'Resuelta' ? (
-              <div className="mt-2 rounded-md border border-emerald-200 bg-emerald-50/70 p-3 text-xs">
-                <p className="font-medium text-emerald-950">Solicitud resuelta</p>
-                <p className="mt-0.5 text-emerald-800 text-[11px]">
-                  Fecha: {pqrs.fechaRespuesta ? formatFecha(pqrs.fechaRespuesta) : 'Registrada'}
+              <div className="mt-2 rounded-md border border-emerald-200 bg-emerald-50/70 p-3 text-xs space-y-2">
+                <p className="font-semibold text-emerald-950">Solicitud resuelta formalmente</p>
+                {pqrs.respuestaOficial && (
+                  <div className="rounded border border-emerald-200/80 bg-white p-2.5 text-slate-800">
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                      Concepto o Decisión Notificada:
+                    </span>
+                    <p className="text-xs leading-relaxed">{pqrs.respuestaOficial}</p>
+                  </div>
+                )}
+                <p className="text-emerald-800 text-[11px]">
+                  Fecha de Notificación: {pqrs.fechaRespuesta ? formatFecha(pqrs.fechaRespuesta) : 'Registrada'}
                 </p>
-                <div className="mt-2.5">
+                <div className="pt-1">
                   <button
-                    onClick={() => alert(`Descargando copia de respuesta del radicado ${pqrs.radicado}`)}
-                    className="text-xs font-medium text-emerald-900 underline hover:text-emerald-700"
+                    onClick={() => alert(`Descargando copia oficial de respuesta para el radicado ${pqrs.radicado}`)}
+                    className="text-xs font-semibold text-emerald-900 underline hover:text-emerald-700"
                   >
                     Descargar Oficio de Respuesta (PDF) →
                   </button>

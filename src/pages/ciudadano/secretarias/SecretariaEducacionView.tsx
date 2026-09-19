@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CustomSelect from '../../../components/CustomSelect'
+import { addTramiteSecretaria, nextTramiteRadicado } from '../../../data/storage'
 
 const GRADOS = [
   'Transición (Preescolar)',
@@ -42,7 +43,23 @@ export default function SecretariaEducacionView() {
 
   function handleSolicitarCupo(e: React.FormEvent) {
     e.preventDefault()
-    setSolicitudEnviada(`MAT-GIR-2026-${Date.now().toString().slice(-5)}`)
+    const codigo = nextTramiteRadicado('MAT-GIR')
+    const hoy = new Date().toISOString().slice(0, 10)
+
+    addTramiteSecretaria('educacion', {
+      id: `edu-${Date.now()}`,
+      radicado: codigo,
+      titulo: `Solicitud de Cupo Escolar: ${alumno || 'Estudiante'}`,
+      solicitante: alumno.trim() || 'Estudiante Gironés',
+      documentoSolicitante: 'Registro / TI en trámite',
+      fecha: hoy,
+      estado: 'En Revisión',
+      prioridad: 'Media',
+      tipoTramite: 'Asignación de Cupos Escolares',
+      descripcion: `Grado solicitado: ${grado}. Asignación en instituciones educativas oficiales de Girón.`,
+    })
+
+    setSolicitudEnviada(codigo)
   }
 
   return (
