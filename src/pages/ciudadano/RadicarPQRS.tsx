@@ -1,10 +1,12 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useMemo, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import type { PQRS, TipoSolicitudPQRS } from '../../types'
+import type { PQRS, TipoSolicitudPQRS, TipoUsuarioPQRS } from '../../types'
 import type { TramiteSecretaria } from '../../types/secretarias'
 import { addPQRS, addTramiteSecretaria, nextRadicadoNumber } from '../../data/storage'
 import SelloRadicado from '../../components/SelloRadicado'
 import CustomSelect from '../../components/CustomSelect'
+import CaptchaSeguridad from '../../components/CaptchaSeguridad'
+import { DEPENDENCIAS, DEPENDENCIA_A_SLUG, PLAZO_DIAS_PQRS } from '../../data/dependencias'
 
 const TIPOS: TipoSolicitudPQRS[] = ['Petición', 'Queja', 'Reclamo', 'Sugerencia', 'Denuncia']
 
@@ -16,44 +18,7 @@ const TIPO_DESCRIPCIONES: Record<TipoSolicitudPQRS, string> = {
   Denuncia: 'Puesta en conocimiento de un hecho presuntamente irregular o acto indebido.',
 }
 
-const DEPENDENCIAS = [
-  'Secretaría de Salud',
-  'Secretaría de Hacienda',
-  'Cobro Coactivo',
-  'Secretaría de Tránsito y Transporte',
-  'Secretaría de Ordenamiento Territorial',
-  'Secretaría de Seguridad, Convivencia y Gestión del Riesgo',
-  'Secretaría de Desarrollo Social',
-  'Secretaría de Gobierno',
-  'Secretaría de Educación',
-  'Secretaría de Infraestructura',
-  'Secretaría de Planeación',
-  'Secretaría de Cultura, Turismo y Deporte',
-  'Atención al Ciudadano / Ventanilla Única',
-]
-
-const DEPENDENCIA_A_SLUG: Record<string, string> = {
-  'Secretaría de Salud': 'salud',
-  'Secretaría de Hacienda': 'hacienda',
-  'Cobro Coactivo': 'hacienda',
-  'Secretaría de Tránsito y Transporte': 'transito-transporte',
-  'Secretaría de Ordenamiento Territorial': 'ordenamiento-territorial',
-  'Secretaría de Seguridad, Convivencia y Gestión del Riesgo': 'seguridad-gestion-riesgo',
-  'Secretaría de Desarrollo Social': 'desarrollo-social',
-  'Secretaría de Gobierno': 'gobierno',
-  'Secretaría de Educación': 'educacion',
-  'Secretaría de Infraestructura': 'infraestructura',
-  'Secretaría de Planeación': 'planeacion',
-  'Secretaría de Cultura, Turismo y Deporte': 'cultura-turismo-deporte',
-}
-
-const PLAZO_DIAS: Record<TipoSolicitudPQRS, number> = {
-  Petición: 15,
-  Queja: 15,
-  Reclamo: 15,
-  Sugerencia: 15,
-  Denuncia: 30,
-}
+const PLAZO_DIAS: Record<TipoSolicitudPQRS, number> = PLAZO_DIAS_PQRS as Record<TipoSolicitudPQRS, number>
 
 function sumarDias(iso: string, dias: number): string {
   const date = new Date(iso)
@@ -65,15 +30,26 @@ export default function RadicarPQRS() {
   const [tipo, setTipo] = useState<TipoSolicitudPQRS>('Petición')
   const [dependencia, setDependencia] = useState(DEPENDENCIAS[0])
   const [asunto, setAsunto] = useState('')
+  const [tipoUsuario, setTipoUsuario] = useState<TipoUsuarioPQRS>('Registrado')
   const [solicitante, setSolicitante] = useState('')
   const [documento, setDocumento] = useState('')
+  const [correo, setCorreo] = useState('')
+  const [telefono, setTelefono] = useState('')
+  const [direccion, setDireccion] = useState('')
   const [archivo, setArchivo] = useState<string | null>(null)
   const [autoriza, setAutoriza] = useState(false)
+  const [captchaValido, setCaptchaValido] = useState(false)
   const [resultado, setResultado] = useState<PQRS | null>(null)
+
+  const esAnonimo = tipoUsuario === 'Anónimo'
+  const formularioValido = useMemo(
+    () => autoriza && captchaValido && correo.trim() !== '' && telefono.trim() !== '' && direccion.trim() !== '',
+    [autoriza, captchaValido, correo, telefono, direccion],
+  )
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!autoriza) return
+    if (!formularioValido) return
 
     const hoy = new Date().toISOString().slice(0, 10)
     const nueva: PQRS = {
@@ -81,14 +57,19 @@ export default function RadicarPQRS() {
       radicado: nextRadicadoNumber(),
       tipo,
       asunto: asunto.trim(),
-      solicitante: solicitante.trim(),
-      documentoSolicitante: documento.trim(),
+      solicitante: esAnonimo ? 'Solicitante Anónimo' : solicitante.trim(),
+      documentoSolicitante: esAnonimo ? 'No registrado' : documento.trim(),
+      tipoUsuario,
+      correo: correo.trim(),
+      telefono: telefono.trim(),
+      direccion: direccion.trim(),
       fechaRadicacion: hoy,
       fechaLimite: sumarDias(hoy, PLAZO_DIAS[tipo]),
       fechaRespuesta: null,
       estado: 'En proceso',
       archivoAdjunto: archivo,
       dependencia,
+      origen: 'Portal Digital',
     }
 
     // 1. Guardar en Ventanilla Única General
@@ -189,8 +170,16 @@ export default function RadicarPQRS() {
                 <dd className="font-mono text-slate-700 mt-0.5">{resultado.fechaLimite}</dd>
               </div>
               <div className="sm:col-span-2 pt-2 border-t border-slate-200">
-                <dt className="text-slate-400">Peticionario</dt>
+                <dt className="text-slate-400">Peticionario ({resultado.tipoUsuario})</dt>
                 <dd className="font-medium text-slate-900 mt-0.5">{resultado.solicitante} (Doc: {resultado.documentoSolicitante})</dd>
+              </div>
+              <div>
+                <dt className="text-slate-400">Notificación por correo</dt>
+                <dd className="font-mono text-slate-700 mt-0.5">{resultado.correo}</dd>
+              </div>
+              <div>
+                <dt className="text-slate-400">Teléfono de contacto</dt>
+                <dd className="font-mono text-slate-700 mt-0.5">{resultado.telefono}</dd>
               </div>
               <div className="sm:col-span-2">
                 <dt className="text-slate-400">Asunto</dt>
@@ -358,35 +347,116 @@ export default function RadicarPQRS() {
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            {/* Tipo de usuario: Anónimo o Registrado */}
+            <div>
+              <span className="block text-xs font-medium text-slate-700 mb-2">Tipo de usuario *</span>
+              <div className="grid grid-cols-2 gap-2">
+                {(['Registrado', 'Anónimo'] as const).map((t) => {
+                  const isSelected = tipoUsuario === t
+                  return (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setTipoUsuario(t)}
+                      className={`flex flex-col items-start p-3 rounded-lg border transition-all text-xs ${
+                        isSelected
+                          ? 'border-vinotinto bg-vinotinto/5 text-vinotinto font-semibold shadow-2xs'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <span className="font-semibold">{t}</span>
+                      <span className="font-normal text-[10px] text-slate-400 mt-0.5">
+                        {t === 'Registrado'
+                          ? 'Se identifica con nombre y documento'
+                          : 'No suministra datos de identificación'}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {!esAnonimo && (
+              <div className="grid gap-4 sm:grid-cols-2 animate-fade-in">
+                <div>
+                  <label htmlFor="input-solicitante" className="block text-xs font-medium text-slate-700 mb-1.5">
+                    Nombre completo del solicitante *
+                  </label>
+                  <input
+                    id="input-solicitante"
+                    required={!esAnonimo}
+                    value={solicitante}
+                    onChange={(e) => setSolicitante(e.target.value)}
+                    placeholder="Ej. Juan Carlos Pérez Gómez"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="input-documento" className="block text-xs font-medium text-slate-700 mb-1.5">
+                    Documento de identidad (C.C. o NIT) *
+                  </label>
+                  <input
+                    id="input-documento"
+                    required={!esAnonimo}
+                    value={documento}
+                    onChange={(e) => setDocumento(e.target.value)}
+                    placeholder="Ej. 1098765432"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 font-mono text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Datos de contacto: obligatorios siempre, incluso en radicación anónima, para poder notificar la respuesta */}
+            <div className="grid gap-4 sm:grid-cols-3 pt-1">
               <div>
-                <label htmlFor="input-solicitante" className="block text-xs font-medium text-slate-700 mb-1.5">
-                  Nombre completo del solicitante *
+                <label htmlFor="input-correo" className="block text-xs font-medium text-slate-700 mb-1.5">
+                  Correo electrónico *
                 </label>
                 <input
-                  id="input-solicitante"
+                  id="input-correo"
+                  type="email"
                   required
-                  value={solicitante}
-                  onChange={(e) => setSolicitante(e.target.value)}
-                  placeholder="Ej. Juan Carlos Pérez Gómez"
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
+                  placeholder="nombre@correo.com"
                   className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label htmlFor="input-documento" className="block text-xs font-medium text-slate-700 mb-1.5">
-                  Documento de identidad (C.C. o NIT) *
+                <label htmlFor="input-telefono" className="block text-xs font-medium text-slate-700 mb-1.5">
+                  Teléfono de contacto *
                 </label>
                 <input
-                  id="input-documento"
+                  id="input-telefono"
+                  type="tel"
                   required
-                  value={documento}
-                  onChange={(e) => setDocumento(e.target.value)}
-                  placeholder="Ej. 1098765432"
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
+                  placeholder="Ej. 3001234567"
                   className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 font-mono text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
                 />
               </div>
+
+              <div>
+                <label htmlFor="input-direccion" className="block text-xs font-medium text-slate-700 mb-1.5">
+                  Dirección de notificación *
+                </label>
+                <input
+                  id="input-direccion"
+                  required
+                  value={direccion}
+                  onChange={(e) => setDireccion(e.target.value)}
+                  placeholder="Ej. Cra 25 #12-40, Girón"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 focus:outline-none transition-all"
+                />
+              </div>
             </div>
+            <p className="text-[11px] text-slate-400 -mt-1">
+              Estos datos de contacto se usarán para notificarle la respuesta oficial de su trámite.
+            </p>
           </div>
 
           {/* Bloque 3: Detalle de los Hechos */}
@@ -451,9 +521,11 @@ export default function RadicarPQRS() {
             </div>
           </div>
 
-          {/* Bloque 4: Autorización y Envío */}
+          {/* Bloque 4: Seguridad, Autorización y Envío */}
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
-            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600 leading-relaxed">
+            <CaptchaSeguridad onValidate={setCaptchaValido} />
+
+            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600 leading-relaxed pt-2 border-t border-slate-100">
               <input
                 type="checkbox"
                 required
@@ -474,7 +546,7 @@ export default function RadicarPQRS() {
               </p>
               <button
                 type="submit"
-                disabled={!autoriza}
+                disabled={!formularioValido}
                 className="inline-flex items-center justify-center rounded-lg bg-vinotinto px-6 py-2.5 text-xs font-semibold text-white hover:bg-vinotinto-deep transition-colors shadow-2xs w-full sm:w-auto disabled:opacity-50 disabled:pointer-events-none"
               >
                 Radicar Solicitud Oficial

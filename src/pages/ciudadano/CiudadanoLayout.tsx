@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import CiudadanoSidebar from '../../components/CiudadanoSidebar'
+import AdminLoginModal from '../../components/AdminLoginModal'
 import Escudo from '../../components/Escudo'
 import { SECRETARIAS } from '../../data/secretarias'
 
@@ -12,6 +13,7 @@ const SECTION_TITLES: Record<string, { title: string; subtitle: string }> = {
 
 export default function CiudadanoLayout() {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
   const location = useLocation()
 
   const currentSection = (() => {
@@ -31,7 +33,7 @@ export default function CiudadanoLayout() {
   })()
 
   return (
-    <div className="flex min-h-screen bg-slate-50/70">
+    <div className="flex min-h-screen bg-white">
       {/* Barra lateral izquierda corporativa */}
       <CiudadanoSidebar
         isMobileOpen={isMobileOpen}
@@ -83,17 +85,26 @@ export default function CiudadanoLayout() {
               <p className="text-xs font-medium text-slate-900">Atención al Ciudadano</p>
               <p className="text-[10px] text-slate-400">San Juan de Girón · Santander</p>
             </div>
-            <Link
-              to="/admin"
-              className="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+            <button
+              type="button"
+              onClick={() => setShowLoginModal(true)}
+              className="flex items-center gap-1.5 rounded-md bg-vinotinto px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-vinotinto-dark"
             >
-              Acceso Funcionarios →
-            </Link>
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5m5 5H3"
+                />
+              </svg>
+              Iniciar sesión
+            </button>
           </div>
         </header>
 
         {/* Contenido dinámico de las vistas ciudadanas */}
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-8 py-7">
+        <main className="mx-auto w-full max-w-7xl flex-1 bg-white px-4 sm:px-8 py-7">
           <Outlet />
         </main>
 
@@ -105,6 +116,8 @@ export default function CiudadanoLayout() {
           </div>
         </footer>
       </div>
+
+      {showLoginModal && <AdminLoginModal onClose={() => setShowLoginModal(false)} />}
     </div>
   )
 }

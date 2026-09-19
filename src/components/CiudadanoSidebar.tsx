@@ -176,16 +176,6 @@ export default function CiudadanoSidebar({ isMobileOpen, onCloseMobile }: Ciudad
             <span className="font-semibold text-slate-200">2026</span>
           </div>
           <p className="text-[10px] text-slate-500">Sede San Juan de Girón</p>
-
-          <div className="pt-2 border-t border-white/5">
-            <Link
-              to="/"
-              className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-white transition-colors"
-            >
-              <span>←</span>
-              <span>Portada Principal</span>
-            </Link>
-          </div>
         </div>
       </aside>
     </>

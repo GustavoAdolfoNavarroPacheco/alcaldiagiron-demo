@@ -18,6 +18,8 @@ export interface ExpedienteVisual {
   dependencia: string
   archivoAdjunto?: string | null
   respuestaOficial?: string
+  correo?: string
+  telefono?: string
 }
 
 function estadoActual(exp: ExpedienteVisual): EstadoPQRS {
@@ -86,6 +88,8 @@ export default function ConsultarEstado() {
         dependencia: p.dependencia,
         archivoAdjunto: p.archivoAdjunto,
         respuestaOficial: p.respuestaOficial,
+        correo: p.correo,
+        telefono: p.telefono,
       })
     } else {
       const t = res.datos as TramiteSecretaria & { secretariaSlug?: string }
@@ -286,6 +290,18 @@ export default function ConsultarEstado() {
                   <dt className="text-slate-400 font-medium">Documento de Identidad</dt>
                   <dd className="font-mono text-slate-800 mt-0.5">{buscado.documentoSolicitante}</dd>
                 </div>
+                {buscado.correo && (
+                  <div>
+                    <dt className="text-slate-400 font-medium">Correo de Notificación</dt>
+                    <dd className="font-mono text-slate-800 mt-0.5">{buscado.correo}</dd>
+                  </div>
+                )}
+                {buscado.telefono && (
+                  <div>
+                    <dt className="text-slate-400 font-medium">Teléfono de Contacto</dt>
+                    <dd className="font-mono text-slate-800 mt-0.5">{buscado.telefono}</dd>
+                  </div>
+                )}
                 <div>
                   <dt className="text-slate-400 font-medium">Fecha de Radicación</dt>
                   <dd className="font-mono text-slate-800 mt-0.5">{formatFecha(buscado.fechaRadicacion)}</dd>

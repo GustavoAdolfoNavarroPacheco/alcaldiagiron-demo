@@ -1,5 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
-import Portada from './pages/Portada'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import CiudadanoLayout from './pages/ciudadano/CiudadanoLayout'
 import CiudadanoInicio from './pages/ciudadano/CiudadanoInicio'
 import RadicarPQRS from './pages/ciudadano/RadicarPQRS'
@@ -15,7 +14,7 @@ import SecretariaDashboard from './pages/admin/SecretariaDashboard'
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Portada />} />
+      <Route path="/" element={<Navigate to="/ciudadano" replace />} />
 
       <Route path="/ciudadano" element={<CiudadanoLayout />}>
         <Route index element={<CiudadanoInicio />} />

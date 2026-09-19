@@ -41,6 +41,18 @@ export type EstadoPQRS = 'En proceso' | 'Resuelta' | 'Vencida'
 
 export type AuditoriaPQRS = 'verde' | 'azul' | 'amarillo' | 'rojo'
 
+export type TipoUsuarioPQRS = 'Anónimo' | 'Registrado'
+
+export type OrigenRadicado = 'Portal Digital' | 'Radicación Presencial'
+
+export type TipoCorrespondencia =
+  | 'Comunicaciones Oficiales Recibidas'
+  | 'Petición Ciudadana'
+  | 'Memorando Interno'
+  | 'Circular'
+
+export type PrioridadRadicado = 'Alta' | 'Media' | 'Baja'
+
 export interface PQRS {
   id: string
   radicado: string
@@ -48,6 +60,10 @@ export interface PQRS {
   asunto: string
   solicitante: string
   documentoSolicitante: string
+  tipoUsuario: TipoUsuarioPQRS
+  correo: string
+  telefono: string
+  direccion: string
   fechaRadicacion: string
   fechaLimite: string
   fechaRespuesta: string | null
@@ -55,6 +71,21 @@ export interface PQRS {
   archivoAdjunto: string | null
   dependencia: string
   respuestaOficial?: string
+  origen?: OrigenRadicado
+  // --- Metadatos de radicación interna (back-office / Gestión Documental) ---
+  // Solo presentes cuando un funcionario radica correspondencia física manualmente
+  tipoCorrespondencia?: TipoCorrespondencia
+  prioridad?: PrioridadRadicado
+  empresaRemitente?: string
+  numeroGuia?: string
+  mensajero?: string
+  funcionarioDestino?: string
+  numeroFolios?: number
+  anexos?: number
+  digitalizado?: boolean
+  correspondenciaPrivada?: boolean
+  destinoMultiple?: boolean
+  observacionesInternas?: string
 }
 
 export function auditoriaPQRS(pqrs: PQRS): AuditoriaPQRS {

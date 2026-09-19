@@ -3,10 +3,17 @@ import { getPQRS, savePQRS, STORAGE_EVENT } from '../../data/storage'
 import { auditoriaPQRS, type AuditoriaPQRS, type PQRS, type TipoSolicitudPQRS } from '../../types'
 import { formatFecha } from '../../data/format'
 import { PQRSAuditoriaBadge } from '../../components/SemaforoBadge'
+import RadicarCorrespondenciaModal from '../../components/admin/RadicarCorrespondenciaModal'
+import CorrespondenciaEnviadaTab from '../../components/admin/CorrespondenciaEnviadaTab'
+import InformesConsultasTab from '../../components/admin/InformesConsultasTab'
+
+type VistaVentanilla = 'bandeja' | 'enviada' | 'informes'
 
 export default function VentanillaUnica() {
   const [listaItems, setListaItems] = useState<PQRS[]>(() => getPQRS())
   const [seleccionadoId, setSeleccionadoId] = useState<string | null>(null)
+  const [vista, setVista] = useState<VistaVentanilla>('bandeja')
+  const [mostrarRadicacion, setMostrarRadicacion] = useState(false)
 
   // Sincronización reactiva en vivo ante cualquier cambio en el almacenamiento
   useEffect(() => {
@@ -148,9 +155,49 @@ export default function VentanillaUnica() {
             <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Atendidas</p>
             <p className="text-base font-bold text-emerald-700 tabular-nums">{conteos.verde + conteos.azul}</p>
           </div>
+          <button
+            type="button"
+            onClick={() => setMostrarRadicacion(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-vinotinto px-3.5 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-vinotinto-deep transition-colors shrink-0"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Radicar Correspondencia
+          </button>
         </div>
       </div>
 
+      {/* Selector de Módulos: Bandeja / Correspondencia Enviada / Informes */}
+      <div className="inline-flex flex-wrap items-center gap-1 rounded-lg bg-slate-100/90 p-1 text-xs">
+        {(
+          [
+            { id: 'bandeja', label: 'Correspondencia Recibida' },
+            { id: 'enviada', label: 'Correspondencia Enviada' },
+            { id: 'informes', label: 'Informes y Consultas' },
+          ] as const
+        ).map((tab) => {
+          const activo = vista === tab.id
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setVista(tab.id)}
+              className={`rounded-md px-3.5 py-1.5 font-medium transition-all ${
+                activo ? 'bg-white text-slate-900 font-semibold shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+              }`}
+            >
+              {tab.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {vista === 'enviada' && <CorrespondenciaEnviadaTab items={listaItems} />}
+      {vista === 'informes' && <InformesConsultasTab items={listaItems} />}
+
+      {vista === 'bandeja' && (
+      <>
       {/* Barra de Filtros y Búsqueda Unificada Enterprise */}
       <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs space-y-3.5">
         <div className="grid gap-3 md:grid-cols-12">
@@ -347,6 +394,9 @@ export default function VentanillaUnica() {
         </table>
       </div>
 
+      </>
+      )}
+
       {/* Drawer / Gestión y Despacho de Radicado */}
       {seleccionado && (
         <GestionRadicadoModal
@@ -355,6 +405,11 @@ export default function VentanillaUnica() {
           onClose={() => setSeleccionadoId(null)}
           onResolver={(respuesta) => handleResolverPQRS(seleccionado.id, respuesta)}
         />
+      )}
+
+      {/* Radicación manual de correspondencia (back-office) */}
+      {mostrarRadicacion && (
+        <RadicarCorrespondenciaModal onClose={() => setMostrarRadicacion(false)} />
       )}
     </div>
   )
@@ -440,8 +495,16 @@ function GestionRadicadoModal({
               <div className="grid grid-cols-2 gap-y-2">
                 <span className="text-slate-500">Nombre:</span>
                 <span className="font-medium text-slate-900">{pqrs.solicitante}</span>
+                <span className="text-slate-500">Tipo de usuario:</span>
+                <span className="text-slate-900">{pqrs.tipoUsuario ?? 'Registrado'}</span>
                 <span className="text-slate-500">Documento:</span>
                 <span className="text-slate-900">{pqrs.documentoSolicitante}</span>
+                <span className="text-slate-500">Correo:</span>
+                <span className="text-slate-900 font-mono">{pqrs.correo || '—'}</span>
+                <span className="text-slate-500">Teléfono:</span>
+                <span className="text-slate-900 font-mono">{pqrs.telefono || '—'}</span>
+                <span className="text-slate-500">Dirección:</span>
+                <span className="text-slate-900">{pqrs.direccion || '—'}</span>
                 <span className="text-slate-500">Radicación:</span>
                 <span className="text-slate-900">{formatFecha(pqrs.fechaRadicacion)}</span>
                 <span className="text-slate-500">Estado:</span>
@@ -461,6 +524,87 @@ function GestionRadicadoModal({
                 <span>Adjunto: {pqrs.archivoAdjunto ?? 'Formulario oficial diligenciado'}</span>
               </div>
             </div>
+          </section>
+
+          {/* Datos de Radicación Interna (Gestión Documental) — solo si fue radicado presencialmente */}
+          <section>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                Radicación
+              </h3>
+              <span
+                className={`rounded px-2 py-0.5 text-[10px] font-semibold ${
+                  pqrs.origen === 'Radicación Presencial'
+                    ? 'bg-amber-100 text-amber-800'
+                    : 'bg-sky-100 text-sky-700'
+                }`}
+              >
+                {pqrs.origen ?? 'Portal Digital'}
+              </span>
+            </div>
+
+            {pqrs.origen === 'Radicación Presencial' ? (
+              <div className="mt-2 rounded-md border border-slate-200 bg-white p-3.5 text-xs space-y-2">
+                <div className="grid grid-cols-2 gap-y-2">
+                  {pqrs.tipoCorrespondencia && (
+                    <>
+                      <span className="text-slate-500">Tipo de correspondencia:</span>
+                      <span className="text-slate-900">{pqrs.tipoCorrespondencia}</span>
+                    </>
+                  )}
+                  {pqrs.prioridad && (
+                    <>
+                      <span className="text-slate-500">Prioridad:</span>
+                      <span className="font-medium text-slate-900">{pqrs.prioridad}</span>
+                    </>
+                  )}
+                  {pqrs.empresaRemitente && (
+                    <>
+                      <span className="text-slate-500">Empresa/Remitente:</span>
+                      <span className="text-slate-900">{pqrs.empresaRemitente}</span>
+                    </>
+                  )}
+                  {pqrs.numeroGuia && (
+                    <>
+                      <span className="text-slate-500">No. Guía:</span>
+                      <span className="font-mono text-slate-900">{pqrs.numeroGuia}</span>
+                    </>
+                  )}
+                  {pqrs.mensajero && (
+                    <>
+                      <span className="text-slate-500">Mensajero:</span>
+                      <span className="text-slate-900">{pqrs.mensajero}</span>
+                    </>
+                  )}
+                  {pqrs.funcionarioDestino && (
+                    <>
+                      <span className="text-slate-500">Funcionario destino:</span>
+                      <span className="text-slate-900">{pqrs.funcionarioDestino}</span>
+                    </>
+                  )}
+                  <span className="text-slate-500">Folios / Anexos:</span>
+                  <span className="text-slate-900">{pqrs.numeroFolios ?? 0} / {pqrs.anexos ?? 0}</span>
+                  <span className="text-slate-500">Digitalizado:</span>
+                  <span className="text-slate-900">{pqrs.digitalizado ? 'Sí' : 'No'}</span>
+                  <span className="text-slate-500">Privada / Múltiple:</span>
+                  <span className="text-slate-900">
+                    {pqrs.correspondenciaPrivada ? 'Privada' : 'Pública'} · {pqrs.destinoMultiple ? 'Múltiples oficinas' : 'Una oficina'}
+                  </span>
+                </div>
+                {pqrs.observacionesInternas && (
+                  <div className="border-t border-slate-100 pt-2 text-slate-600">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-0.5">
+                      Observaciones internas
+                    </span>
+                    {pqrs.observacionesInternas}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className="mt-2 text-[11px] text-slate-400">
+                Radicado directamente por el ciudadano a través del portal digital de la Alcaldía.
+              </p>
+            )}
           </section>
 
           {/* Despacho y Respuesta Oficial */}
