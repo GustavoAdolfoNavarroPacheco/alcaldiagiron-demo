@@ -4,6 +4,7 @@ import CiudadanoLayout from './pages/ciudadano/CiudadanoLayout'
 import CiudadanoInicio from './pages/ciudadano/CiudadanoInicio'
 import RadicarPQRS from './pages/ciudadano/RadicarPQRS'
 import ConsultarEstado from './pages/ciudadano/ConsultarEstado'
+import SecretariaDetalle from './pages/ciudadano/SecretariaDetalle'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminResumen from './pages/admin/AdminResumen'
 import CobroCoactivo from './pages/admin/CobroCoactivo'
@@ -20,6 +21,7 @@ export default function App() {
         <Route index element={<CiudadanoInicio />} />
         <Route path="radicar" element={<RadicarPQRS />} />
         <Route path="consultar" element={<ConsultarEstado />} />
+        <Route path="secretaria/:slug" element={<SecretariaDetalle />} />
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>
