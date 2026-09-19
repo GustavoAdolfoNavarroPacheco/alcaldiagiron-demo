@@ -8,6 +8,8 @@ import AdminLayout from './pages/admin/AdminLayout'
 import AdminResumen from './pages/admin/AdminResumen'
 import CobroCoactivo from './pages/admin/CobroCoactivo'
 import VentanillaUnica from './pages/admin/VentanillaUnica'
+import SecretariasIndex from './pages/admin/SecretariasIndex'
+import SecretariaDashboard from './pages/admin/SecretariaDashboard'
 
 export default function App() {
   return (
@@ -24,6 +26,8 @@ export default function App() {
         <Route index element={<AdminResumen />} />
         <Route path="cobro-coactivo" element={<CobroCoactivo />} />
         <Route path="ventanilla-unica" element={<VentanillaUnica />} />
+        <Route path="secretarias" element={<SecretariasIndex />} />
+        <Route path="secretarias/:slug" element={<SecretariaDashboard />} />
       </Route>
     </Routes>
   )
